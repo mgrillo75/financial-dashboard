@@ -15,7 +15,7 @@
 
 ## 📗 About
 
-The project consists of listing the films being shown at the cinema and allows the user to save their favorite films.
+The project consists of listing the film being shown at the cinema and allows the user to save their favorite films.
 
 ---
 
