@@ -20,7 +20,7 @@ export const StyledCards = styled.div`
   }
 
   .my-cards-header .btn-new-card {
-    background: ${({ theme }) => theme.colors.background};
+    background: ${({ theme }) => theme.colors.componentBackground};
     border: 1px solid ${({ theme }) => theme.colors.border};
     display: flex;
     align-items: center;

@@ -13,7 +13,7 @@ export const StyledAside = styled.aside<iStyledAsideProps>`
   flex-direction: column;
   z-index: 99;
   position: relative;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.componentBackground};
 
   .show {
     transform: translateY(0);

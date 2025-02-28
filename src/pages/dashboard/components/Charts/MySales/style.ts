@@ -5,11 +5,11 @@ export const StyledMySalesChart = styled.div`
   span {
     font-size: 0.875rem;
   }
-  width: 50%;
-  height: 226px;
+  width: 33.33%;
+  height: 280px;
   padding: 1.5rem;
   border-radius: 8px;
-  background-color: ${({theme}) => theme.colors.background};
+  background-color: ${({theme}) => theme.colors.componentBackground};
   border: 1px solid ${({theme}) => theme.colors.border};
   display: flex;
 

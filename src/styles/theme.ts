@@ -8,6 +8,7 @@ interface iTheme {
     success: string;
     danger: string;
     background: string;
+    componentBackground: string;
     border: string;
     gray: string;
     toolTipBackground: string;
@@ -24,7 +25,8 @@ export const darkTheme: iTheme = {
     black: '#141414',
     success: '#25D757',
     danger: '#F85640',
-    background: '#181818',
+    background: '#2D1B4E',
+    componentBackground: '#181818',
     border: '#222222',
     gray: '#AAAAAA',
     toolTipBackground: '#25253475',
@@ -42,6 +44,7 @@ export const lightTheme: iTheme = {
     success: '#25D757',
     danger: '#F85640',
     background: '#FFFFFF',
+    componentBackground: '#F5F5F5',
     border: '#eee',
     gray: '#7b7b7b',
     toolTipBackground: '#eee',

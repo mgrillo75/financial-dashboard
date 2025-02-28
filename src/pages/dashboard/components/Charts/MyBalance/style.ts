@@ -4,7 +4,7 @@ export const StyledMyBalanceChart = styled.div`
   margin: 1.5rem 0;
   padding: 1.5rem;
   border-radius: 8px;
-  background-color: ${({theme}) => theme.colors.background};
+  background-color: ${({theme}) => theme.colors.componentBackground};
   border: 1px solid ${({theme}) => theme.colors.border};
 
   .header {

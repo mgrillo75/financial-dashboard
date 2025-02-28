@@ -11,7 +11,8 @@ export const StyledDashboard = styled.main`
 
   .footer-charts {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
+    justify-content: space-between;
   }
 
   @media ${breakpoints.md} {

@@ -34,7 +34,7 @@ export const StyledContainer = styled.div<iStyledContainerProps>`
 
   .navigation {
     grid-area: navigation;
-    background-color: ${({theme}) => theme.colors.background};
+    background-color: ${({theme}) => theme.colors.componentBackground};
   }
 
   @media ${breakpoints.md} {

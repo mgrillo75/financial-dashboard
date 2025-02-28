@@ -9,13 +9,74 @@ import {
 } from 'recharts';
 import { StyledMyBalanceChart } from './style';
 import { useTheme } from 'styled-components';
-import { dataMyBlance } from '../../../../../mock/dashboard';
 import { useDashboardContext } from '../../../../../hooks/useDashboardContext';
 import SkeletonCharts from '../../../../../components/Layout/Skeleton/components/SkeletonCharts';
+import { useMemo } from 'react';
+
+// Helper function for currency formatting
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
+// Categories that should always be counted as income regardless of other factors
+const INCOME_CATEGORIES = ['Income', 'Cryptocurrency'];
 
 const MyBalanceChart = () => {
-  const { loading } = useDashboardContext();
+  const { loading, transactions } = useDashboardContext();
   const theme = useTheme();
+
+  // Calculate monthly income and spending data from transactions
+  const monthlyChartData = useMemo(() => {
+    if (!transactions || transactions.length === 0) return [];
+    
+    // Group transactions by month and calculate income and spending
+    const monthlyData: Record<string, { name: string, income: number, spend: number, year: number }> = {};
+    
+    // Sort transactions by date
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    
+    // Process all transactions
+    sortedTransactions.forEach(transaction => {
+      // Extract month and year from the date (e.g., "2024-04-15" -> "Apr 2024")
+      const date = new Date(transaction.date);
+      const month = date.toLocaleString('en-US', { month: 'short' });
+      const year = date.getFullYear();
+      const monthYear = `${month} ${year}`;
+      
+      // Initialize the month if it doesn't exist
+      if (!monthlyData[monthYear]) {
+        monthlyData[monthYear] = {
+          name: monthYear,
+          income: 0,
+          spend: 0,
+          year: year
+        };
+      }
+      
+      // Add to income or spend based on the transaction amount and category
+      if (transaction.amount > 0) {
+        // Consider all positive amounts as income
+        monthlyData[monthYear].income += transaction.amount;
+      } else if (transaction.amount < 0) {
+        monthlyData[monthYear].spend += Math.abs(transaction.amount);
+      }
+    });
+    
+    // Convert to array and sort chronologically
+    return Object.values(monthlyData)
+      .sort((a, b) => {
+        // Sort by year first, then by month
+        const aDate = new Date(`${a.name.split(' ')[0]} 1, ${a.year}`);
+        const bDate = new Date(`${b.name.split(' ')[0]} 1, ${b.year}`);
+        return aDate.getTime() - bDate.getTime();
+      });
+    
+  }, [transactions]);
 
   return loading ? (
     <SkeletonCharts />
@@ -37,7 +98,7 @@ const MyBalanceChart = () => {
       <div className="chart">
         <ResponsiveContainer width="99%" height="100%">
           <AreaChart
-            data={dataMyBlance}
+            data={monthlyChartData}
             margin={{
               bottom: 0,
             }}
@@ -62,17 +123,19 @@ const MyBalanceChart = () => {
             <CartesianGrid
               stroke={theme.colors.border}
               horizontal={true}
-            />{' '}
+            />
             <Tooltip
               contentStyle={{
                 backgroundColor: theme.colors.toolTipBackground,
                 borderRadius: '8px',
-                border: `1px solid theme.colors.toolTipBorder}`,
+                border: `1px solid ${theme.colors.toolTipBorder}`,
                 backdropFilter: 'blur(3px)',
                 textTransform: 'capitalize',
               }}
+              formatter={(value) => {
+                return [`$${formatCurrency(value as number)}`, null];
+              }}
             />
-            AreatoolTipBackground
             <Area
               type="monotone"
               dataKey="income"

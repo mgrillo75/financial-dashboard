@@ -3,53 +3,95 @@
    
 </h1>
 
-# Link to the app
+# Financial Dashboard
+
+A modern financial dashboard application built with React, TypeScript, and styled-components.
+
+## 🔗 Live Demo
 
 [Financial Dashboard](https://financial-dashboard-pi-seven.vercel.app/)
 
-# 🔍 Summary
+## 📖 About
 
-- [About](#-sobre)
-- [Tech Stack](#-tecnologias-utilizadas)
-- [How to download](#-como-baixar-o-projeto)
+This project is a financial dashboard that helps users manage their financial information, including credit and debit cards. It provides a clean interface for viewing and organizing financial data.
 
-## 📗 About
+## 🚀 Technology Stack
 
-The project consists of listing the film being shown at the cinema and allows the user to save their favorite films.
-
----
-
-## 👨‍🚀 Next Updates
-
-- Allow mobile menu
-- Create horizontal scroll from card session
-
----
-
-## 🚀 Technologies used
-
-The project was developed using the following technologies
-
-- [ReactJS](https://reactjs.org)
+- [React](https://reactjs.org)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Styled Components](https://styled-components.com/)
+- [Vite](https://vitejs.dev/)
+- [React Router](https://reactrouter.com/)
+- [Recharts](https://recharts.org/) - For data visualization
+- [React Hook Form](https://react-hook-form.com/) - For form handling
+- [Zod](https://zod.dev/) - For form validation
+- [JSON Server](https://github.com/typicode/json-server) - For mock API
 
----
+## 🛠️ Setup and Installation
 
-## 🎮 How to download
+### Prerequisites
 
+- Node.js (v16 or higher)
+- Yarn or npm
+
+### Installation Steps
+
+1. Clone the repository
 ```bash
-
-    # Clone the repository
-    $ git clone https://github.com/renanvilelati/financial-dashboard
-
-    # Install the dependencies
-    $ yarn
-
-    # Started the project
-    $ yarn dev
+git clone https://github.com/renanvilelati/financial-dashboard
+cd financial-dashboard
 ```
 
----
+2. Install dependencies
+```bash
+yarn
+# or using npm
+npm install
+```
 
-Developed by 🐻 por Renan Vilela
+3. Start the mock backend server
+```bash
+yarn dev:back
+# or using npm
+npm run dev:back
+```
+
+4. In a new terminal, start the frontend development server
+```bash
+yarn dev
+# or using npm
+npm run dev
+```
+
+5. Open your browser and navigate to `http://localhost:5173` (or the URL shown in your terminal)
+
+## 📋 Available Scripts
+
+- `yarn dev` - Starts the frontend development server
+- `yarn dev:back` - Starts the JSON server for mock API (runs on port 4000)
+- `yarn build` - Creates a production build
+- `yarn lint` - Runs the linter
+- `yarn preview` - Previews the production build locally
+
+## 🔍 Project Structure
+
+- `/src` - Source code
+  - `/assets` - Static assets
+  - `/components` - Reusable UI components
+  - `/contexts` - React contexts
+  - `/hooks` - Custom React hooks
+  - `/mock` - Mock data
+  - `/pages` - Page components
+  - `/services` - API services
+  - `/styles` - Global styles
+  - `/types` - TypeScript type definitions
+  - `/utils` - Utility functions
+
+## 📋 Planned Updates
+
+- [ ] Add mobile menu support
+- [ ] Create horizontal scroll for card section
+
+## 🧑‍💻 Author
+
+Developed by Renan Vilela

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { breakpoints } from '../../../../../constants/breakpoints';
 
-export const StyledMonthlyExpensesChart = styled.div`
+export const StyledMonthlyIncomeChart = styled.div`
   width: 33.33%;
   height: 280px;
   padding: 1.5rem;
@@ -27,33 +27,33 @@ export const StyledMonthlyExpensesChart = styled.div`
     top: 20%;
     max-width: 190px;
     z-index: 10;
-  }
 
-  li {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: 0.85rem;
-  }
-  
-  li div {
-    display: flex;
-    align-items: center;
-    min-width: 95px;
-    font-weight: 500;
-  }
-  
-  li div span:nth-of-type(1) {
-    margin-right: 0.5rem;
-  }
+    li {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    
+    li div {
+      display: flex;
+      align-items: center;
+      min-width: 95px;
+      font-weight: 500;
+    }
+    
+    li div span:nth-of-type(1) {
+      margin-right: 0.5rem;
+    }
 
-  .expense-name {
-    text-align: left;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 95px;
+    .expense-name {
+      text-align: left;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 95px;
+    }
   }
 
   .recharts-pie {
@@ -111,4 +111,4 @@ export const StyledMonthlyExpensesChart = styled.div`
 
     width: 100%;
   }
-`;
+`; 
