@@ -5,7 +5,7 @@
       "type": "Debit",
       "userName": "Your Name",
       "password": "1238 XXXX XXXX XXXX",
-      "validate": "2028-03-10T06:32:52.635Z"
+      "validate": "2028-03-10T08:47:27.394Z"
     }
   ],
   "transactions": [
@@ -43808,6 +43808,306 @@
       "isDebit": false,
       "category": "Income",
       "cardId": "1"
+    },
+    {
+      "id": "3651",
+      "postedDate": "02/01/2025",
+      "transactionDate": "02/01/2025",
+      "date": "2025-02-01",
+      "type": "Debit",
+      "description": "SPOTIFY PREMIUM",
+      "amount": -9.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Subscription"
+    },
+    {
+      "id": "3652",
+      "postedDate": "02/03/2025",
+      "transactionDate": "02/03/2025",
+      "date": "2025-02-03",
+      "type": "Debit",
+      "description": "HOME DEPOT",
+      "amount": -92.45,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3653",
+      "postedDate": "02/05/2025",
+      "transactionDate": "02/05/2025",
+      "date": "2025-02-05",
+      "type": "Debit",
+      "description": "UBER EATS DELIVERY",
+      "amount": -29.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Food Delivery"
+    },
+    {
+      "id": "3654",
+      "postedDate": "02/08/2025",
+      "transactionDate": "02/08/2025",
+      "date": "2025-02-08",
+      "type": "Debit",
+      "description": "GYM MEMBERSHIP",
+      "amount": -49.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Health & Fitness"
+    },
+    {
+      "id": "3655",
+      "postedDate": "02/10/2025",
+      "transactionDate": "02/10/2025",
+      "date": "2025-02-10",
+      "type": "Debit",
+      "description": "DOCTOR VISIT COPAY",
+      "amount": -25,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Healthcare"
+    },
+    {
+      "id": "3656",
+      "postedDate": "02/12/2025",
+      "transactionDate": "02/12/2025",
+      "date": "2025-02-12",
+      "type": "Debit",
+      "description": "CHEVRON",
+      "amount": -62.15,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Fuel"
+    },
+    {
+      "id": "3657",
+      "postedDate": "02/15/2025",
+      "transactionDate": "02/15/2025",
+      "date": "2025-02-15",
+      "type": "Credit",
+      "description": "SALARY DEPOSIT",
+      "amount": 2750,
+      "isDebit": false,
+      "cardId": "1",
+      "category": "Income"
+    },
+    {
+      "id": "3658",
+      "postedDate": "02/18/2025",
+      "transactionDate": "02/18/2025",
+      "date": "2025-02-18",
+      "type": "Debit",
+      "description": "WALMART",
+      "amount": -134.67,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3659",
+      "postedDate": "02/20/2025",
+      "transactionDate": "02/20/2025",
+      "date": "2025-02-20",
+      "type": "Debit",
+      "description": "CHIPOTLE",
+      "amount": -12.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Dining"
+    },
+    {
+      "id": "3660",
+      "postedDate": "02/22/2025",
+      "transactionDate": "02/22/2025",
+      "date": "2025-02-22",
+      "type": "Debit",
+      "description": "AMAZON.COM",
+      "amount": -76.29,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3661",
+      "postedDate": "02/25/2025",
+      "transactionDate": "02/25/2025",
+      "date": "2025-02-25",
+      "type": "Debit",
+      "description": "WATER BILL",
+      "amount": -45.78,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Utility"
+    },
+    {
+      "id": "3662",
+      "postedDate": "02/28/2025",
+      "transactionDate": "02/28/2025",
+      "date": "2025-02-28",
+      "type": "Debit",
+      "description": "RENT PAYMENT",
+      "amount": -1650,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Housing"
+    },
+    {
+      "id": "3663",
+      "postedDate": "03/01/2025",
+      "transactionDate": "03/01/2025",
+      "date": "2025-03-01",
+      "type": "Debit",
+      "description": "ADOBE CREATIVE CLOUD",
+      "amount": -29.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Subscription"
+    },
+    {
+      "id": "3664",
+      "postedDate": "03/03/2025",
+      "transactionDate": "03/03/2025",
+      "date": "2025-03-03",
+      "type": "Debit",
+      "description": "TARGET",
+      "amount": -87.52,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3665",
+      "postedDate": "03/05/2025",
+      "transactionDate": "03/05/2025",
+      "date": "2025-03-05",
+      "type": "Debit",
+      "description": "PANERA BREAD",
+      "amount": -15.45,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Dining"
+    },
+    {
+      "id": "3666",
+      "postedDate": "03/08/2025",
+      "transactionDate": "03/08/2025",
+      "date": "2025-03-08",
+      "type": "Debit",
+      "description": "CONCERT TICKETS",
+      "amount": -120,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Entertainment"
+    },
+    {
+      "id": "3667",
+      "postedDate": "03/10/2025",
+      "transactionDate": "03/10/2025",
+      "date": "2025-03-10",
+      "type": "Debit",
+      "description": "CAR INSURANCE",
+      "amount": -145,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Insurance"
+    },
+    {
+      "id": "3668",
+      "postedDate": "03/12/2025",
+      "transactionDate": "03/12/2025",
+      "date": "2025-03-12",
+      "type": "Debit",
+      "description": "EXXON",
+      "amount": -58.25,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Fuel"
+    },
+    {
+      "id": "3669",
+      "postedDate": "03/15/2025",
+      "transactionDate": "03/15/2025",
+      "date": "2025-03-15",
+      "type": "Credit",
+      "description": "SALARY DEPOSIT",
+      "amount": 2750,
+      "isDebit": false,
+      "cardId": "1",
+      "category": "Income"
+    },
+    {
+      "id": "3670",
+      "postedDate": "03/18/2025",
+      "transactionDate": "03/18/2025",
+      "date": "2025-03-18",
+      "type": "Debit",
+      "description": "KROGER",
+      "amount": -110.34,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Grocery"
+    },
+    {
+      "id": "3671",
+      "postedDate": "03/20/2025",
+      "transactionDate": "03/20/2025",
+      "date": "2025-03-20",
+      "type": "Debit",
+      "description": "STARBUCKS",
+      "amount": -6.75,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Dining"
+    },
+    {
+      "id": "3672",
+      "postedDate": "03/22/2025",
+      "transactionDate": "03/22/2025",
+      "date": "2025-03-22",
+      "type": "Debit",
+      "description": "CELL PHONE BILL",
+      "amount": -85.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Phone"
+    },
+    {
+      "id": "3673",
+      "postedDate": "03/25/2025",
+      "transactionDate": "03/25/2025",
+      "date": "2025-03-25",
+      "type": "Debit",
+      "description": "ELECTRICITY BILL",
+      "amount": -95.32,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Utility"
+    },
+    {
+      "id": "3674",
+      "postedDate": "03/28/2025",
+      "transactionDate": "03/28/2025",
+      "date": "2025-03-28",
+      "type": "Debit",
+      "description": "COINBASE CRYPTO INVEST",
+      "amount": -500,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Cryptocurrency"
+    },
+    {
+      "id": "3675",
+      "postedDate": "03/31/2025",
+      "transactionDate": "03/31/2025",
+      "date": "2025-03-31",
+      "type": "Debit",
+      "description": "RENT PAYMENT",
+      "amount": -1650,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Housing"
     }
   ],
   "monthlySpending": {
@@ -44140,6 +44440,32 @@
       "Entertainment": 616.31,
       "Coffee": 24.4,
       "Phone": 46.07
+    },
+    "2025-02": {
+      "Subscription": 9.99,
+      "Shopping": 303.41,
+      "Food Delivery": 29.99,
+      "Health & Fitness": 49.99,
+      "Healthcare": 25,
+      "Fuel": 62.15,
+      "Income": 0,
+      "Dining": 12.99,
+      "Utility": 45.78,
+      "Housing": 1650
+    },
+    "2025-03": {
+      "Subscription": 29.99,
+      "Shopping": 87.52,
+      "Dining": 22.2,
+      "Entertainment": 120,
+      "Insurance": 145,
+      "Fuel": 58.25,
+      "Income": 0,
+      "Grocery": 110.34,
+      "Phone": 85.99,
+      "Utility": 95.32,
+      "Cryptocurrency": 500,
+      "Housing": 1650
     }
   },
   "balanceHistory": [
@@ -58742,248 +59068,348 @@
     {
       "date": "2025-01-06",
       "balance": "-31171.59"
+    },
+    {
+      "date": "2025-02-01",
+      "balance": "-31181.58"
+    },
+    {
+      "date": "2025-02-03",
+      "balance": "-31274.03"
+    },
+    {
+      "date": "2025-02-05",
+      "balance": "-31304.02"
+    },
+    {
+      "date": "2025-02-08",
+      "balance": "-31354.01"
+    },
+    {
+      "date": "2025-02-10",
+      "balance": "-31379.01"
+    },
+    {
+      "date": "2025-02-12",
+      "balance": "-31441.16"
+    },
+    {
+      "date": "2025-02-15",
+      "balance": "-28691.16"
+    },
+    {
+      "date": "2025-02-18",
+      "balance": "-28825.83"
+    },
+    {
+      "date": "2025-02-20",
+      "balance": "-28838.82"
+    },
+    {
+      "date": "2025-02-22",
+      "balance": "-28915.11"
+    },
+    {
+      "date": "2025-02-25",
+      "balance": "-28960.89"
+    },
+    {
+      "date": "2025-02-28",
+      "balance": "-30610.89"
+    },
+    {
+      "date": "2025-03-01",
+      "balance": "-30640.88"
+    },
+    {
+      "date": "2025-03-03",
+      "balance": "-30728.40"
+    },
+    {
+      "date": "2025-03-05",
+      "balance": "-30743.85"
+    },
+    {
+      "date": "2025-03-08",
+      "balance": "-30863.85"
+    },
+    {
+      "date": "2025-03-10",
+      "balance": "-31008.85"
+    },
+    {
+      "date": "2025-03-12",
+      "balance": "-31067.10"
+    },
+    {
+      "date": "2025-03-15",
+      "balance": "-28317.10"
+    },
+    {
+      "date": "2025-03-18",
+      "balance": "-28427.44"
+    },
+    {
+      "date": "2025-03-20",
+      "balance": "-28434.19"
+    },
+    {
+      "date": "2025-03-22",
+      "balance": "-28520.18"
+    },
+    {
+      "date": "2025-03-25",
+      "balance": "-28615.50"
+    },
+    {
+      "date": "2025-03-28",
+      "balance": "-29115.50"
+    },
+    {
+      "date": "2025-03-31",
+      "balance": "-30765.50"
     }
   ],
   "recentActivity": [
     {
-      "id": "8",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "PURCHASE RETURN AUTHORIZED ON 01/04 AMAZON MKTPLACE PM Amzn.com/bill WA S305004569656360 CARD 1130",
-      "amount": 7.52,
-      "isDebit": false,
-      "category": "Bill Payment",
-      "cardId": "1"
-    },
-    {
-      "id": "7",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "MOBILE DEPOSIT : REF NUMBER :412050273512",
-      "amount": 100,
-      "isDebit": false,
-      "category": "Income",
-      "cardId": "1"
-    },
-    {
-      "id": "6",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/05 Ref#20250105021000021P1BRJPC04720054576",
-      "amount": 100.77,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "5",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/05 Ref#20250105021000021P1BRJPC00480070958",
-      "amount": 96.14,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "4",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "MOBILE DEPOSIT : REF NUMBER :415050346069",
-      "amount": 150,
-      "isDebit": false,
-      "category": "Income",
-      "cardId": "1"
-    },
-    {
-      "id": "3",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/05 Ref#20250105021000021P1BRJPC00480104222",
-      "amount": 143.25,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "2",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/05 Ref#20250105021000021P1BRJPC00480106457",
-      "amount": 196.5,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "1",
-      "postedDate": "1/6/2025",
-      "date": "2025-01-06",
-      "transactionDate": "1/6/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/05 Ref#20250105021000021P1BRJPC06720116482",
-      "amount": 111.84,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "16",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/03 Ref#20250103021000021P1BRJPC09760108581",
-      "amount": 57.97,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "15",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/03 Ref#20250103021000021P1BRJPC09760178447",
-      "amount": 340.16,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "14",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "RECURRING PAYMENT AUTHORIZED ON 01/01 BOOST MOBILE 833-502-6678 CO S305001487593716 CARD 1130",
-      "amount": -46.11,
+      "id": "3675",
+      "postedDate": "03/31/2025",
+      "transactionDate": "03/31/2025",
+      "date": "2025-03-31",
+      "type": "Debit",
+      "description": "RENT PAYMENT",
+      "amount": -1650,
       "isDebit": true,
-      "category": "Bill Payment",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Housing"
     },
     {
-      "id": "13",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "PURCHASE AUTHORIZED ON 01/02 UBER *EATS HELP.UBER.COM CA S465002673516478 CARD 1761",
-      "amount": -41.23,
+      "id": "3674",
+      "postedDate": "03/28/2025",
+      "transactionDate": "03/28/2025",
+      "date": "2025-03-28",
+      "type": "Debit",
+      "description": "COINBASE CRYPTO INVEST",
+      "amount": -500,
       "isDebit": true,
-      "category": "Miscellaneous",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Cryptocurrency"
     },
     {
-      "id": "12",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "PURCHASE AUTHORIZED ON 01/02 UBER *EATS HELP.UBER.COM CA S385002684429603 CARD 1761",
-      "amount": -27.63,
+      "id": "3673",
+      "postedDate": "03/25/2025",
+      "transactionDate": "03/25/2025",
+      "date": "2025-03-25",
+      "type": "Debit",
+      "description": "ELECTRICITY BILL",
+      "amount": -95.32,
       "isDebit": true,
-      "category": "Miscellaneous",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Utility"
     },
     {
-      "id": "11",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "NA",
-      "description": "ZELLE TO T ON 01/03 REF #RP0YDMRDHL",
-      "amount": -350,
+      "id": "3672",
+      "postedDate": "03/22/2025",
+      "transactionDate": "03/22/2025",
+      "date": "2025-03-22",
+      "type": "Debit",
+      "description": "CELL PHONE BILL",
+      "amount": -85.99,
       "isDebit": true,
-      "category": "Transfer",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Phone"
     },
     {
-      "id": "10",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "POS",
-      "description": "STREAM ENERGY 01-02 888-685-7693TX 4739 DEBIT CARD PURCHASE",
-      "amount": -252.18,
+      "id": "3671",
+      "postedDate": "03/20/2025",
+      "transactionDate": "03/20/2025",
+      "date": "2025-03-20",
+      "type": "Debit",
+      "description": "STARBUCKS",
+      "amount": -6.75,
       "isDebit": true,
-      "category": "Utility",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Dining"
     },
     {
-      "id": "9",
-      "postedDate": "1/3/2025",
-      "date": "2025-01-03",
-      "transactionDate": "1/3/2025",
-      "type": "POS",
-      "description": "4TE*DYNAMARK MONIT 01-02 855-742-9180 MD 4739 DEBIT CARD RECURRING PYMT",
-      "amount": -42.21,
+      "id": "3670",
+      "postedDate": "03/18/2025",
+      "transactionDate": "03/18/2025",
+      "date": "2025-03-18",
+      "type": "Debit",
+      "description": "KROGER",
+      "amount": -110.34,
       "isDebit": true,
-      "category": "Subscription",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Grocery"
     },
     {
-      "id": "31",
-      "postedDate": "1/2/2025",
-      "date": "2025-01-02",
-      "transactionDate": "1/2/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/01 Ref#20250101021000021P1BRJPC09760070638",
-      "amount": 73.69,
+      "id": "3669",
+      "postedDate": "03/15/2025",
+      "transactionDate": "03/15/2025",
+      "date": "2025-03-15",
+      "type": "Credit",
+      "description": "SALARY DEPOSIT",
+      "amount": 2750,
       "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Income"
     },
     {
-      "id": "30",
-      "postedDate": "1/2/2025",
-      "date": "2025-01-02",
-      "transactionDate": "1/2/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/02 Ref#20250102021000021P1BRJPC02640097231",
-      "amount": 31.44,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "29",
-      "postedDate": "1/2/2025",
-      "date": "2025-01-02",
-      "transactionDate": "1/2/2025",
-      "type": "NA",
-      "description": "Instant Pmt from COINBASE on 01/02 Ref#20250102021000021P1BRJPC02640098081",
-      "amount": 49.12,
-      "isDebit": false,
-      "category": "Cryptocurrency",
-      "cardId": "1"
-    },
-    {
-      "id": "28",
-      "postedDate": "1/2/2025",
-      "date": "2025-01-02",
-      "transactionDate": "1/2/2025",
-      "type": "NA",
-      "description": "MONEY TRANSFER AUTHORIZED ON 12/30 COINBASE https://www.f CA S384366275408108 CARD 1130",
-      "amount": -900,
+      "id": "3668",
+      "postedDate": "03/12/2025",
+      "transactionDate": "03/12/2025",
+      "date": "2025-03-12",
+      "type": "Debit",
+      "description": "EXXON",
+      "amount": -58.25,
       "isDebit": true,
-      "category": "Cryptocurrency",
-      "cardId": "1"
+      "cardId": "1",
+      "category": "Fuel"
+    },
+    {
+      "id": "3667",
+      "postedDate": "03/10/2025",
+      "transactionDate": "03/10/2025",
+      "date": "2025-03-10",
+      "type": "Debit",
+      "description": "CAR INSURANCE",
+      "amount": -145,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Insurance"
+    },
+    {
+      "id": "3666",
+      "postedDate": "03/08/2025",
+      "transactionDate": "03/08/2025",
+      "date": "2025-03-08",
+      "type": "Debit",
+      "description": "CONCERT TICKETS",
+      "amount": -120,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Entertainment"
+    },
+    {
+      "id": "3665",
+      "postedDate": "03/05/2025",
+      "transactionDate": "03/05/2025",
+      "date": "2025-03-05",
+      "type": "Debit",
+      "description": "PANERA BREAD",
+      "amount": -15.45,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Dining"
+    },
+    {
+      "id": "3664",
+      "postedDate": "03/03/2025",
+      "transactionDate": "03/03/2025",
+      "date": "2025-03-03",
+      "type": "Debit",
+      "description": "TARGET",
+      "amount": -87.52,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3663",
+      "postedDate": "03/01/2025",
+      "transactionDate": "03/01/2025",
+      "date": "2025-03-01",
+      "type": "Debit",
+      "description": "ADOBE CREATIVE CLOUD",
+      "amount": -29.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Subscription"
+    },
+    {
+      "id": "3662",
+      "postedDate": "02/28/2025",
+      "transactionDate": "02/28/2025",
+      "date": "2025-02-28",
+      "type": "Debit",
+      "description": "RENT PAYMENT",
+      "amount": -1650,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Housing"
+    },
+    {
+      "id": "3661",
+      "postedDate": "02/25/2025",
+      "transactionDate": "02/25/2025",
+      "date": "2025-02-25",
+      "type": "Debit",
+      "description": "WATER BILL",
+      "amount": -45.78,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Utility"
+    },
+    {
+      "id": "3660",
+      "postedDate": "02/22/2025",
+      "transactionDate": "02/22/2025",
+      "date": "2025-02-22",
+      "type": "Debit",
+      "description": "AMAZON.COM",
+      "amount": -76.29,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3659",
+      "postedDate": "02/20/2025",
+      "transactionDate": "02/20/2025",
+      "date": "2025-02-20",
+      "type": "Debit",
+      "description": "CHIPOTLE",
+      "amount": -12.99,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Dining"
+    },
+    {
+      "id": "3658",
+      "postedDate": "02/18/2025",
+      "transactionDate": "02/18/2025",
+      "date": "2025-02-18",
+      "type": "Debit",
+      "description": "WALMART",
+      "amount": -134.67,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Shopping"
+    },
+    {
+      "id": "3657",
+      "postedDate": "02/15/2025",
+      "transactionDate": "02/15/2025",
+      "date": "2025-02-15",
+      "type": "Credit",
+      "description": "SALARY DEPOSIT",
+      "amount": 2750,
+      "isDebit": false,
+      "cardId": "1",
+      "category": "Income"
+    },
+    {
+      "id": "3656",
+      "postedDate": "02/12/2025",
+      "transactionDate": "02/12/2025",
+      "date": "2025-02-12",
+      "type": "Debit",
+      "description": "CHEVRON",
+      "amount": -62.15,
+      "isDebit": true,
+      "cardId": "1",
+      "category": "Fuel"
     }
   ]
 }

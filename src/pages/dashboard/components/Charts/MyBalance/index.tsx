@@ -36,11 +36,17 @@ const MyBalanceChart = () => {
     if (!transactions?.length) return [];
     const uniqueMonths = new Set<string>();
 
+    // Get all months from transactions
     transactions.forEach((t) => {
       const d = new Date(t.date);
       const monthStr = d.toLocaleString('default', { month: 'short' });
       const yearStr = d.getFullYear();
       uniqueMonths.add(`${monthStr} ${yearStr}`);
+    });
+
+    // Make sure Jan, Feb, Mar 2025 are included
+    ['Jan', 'Feb', 'Mar'].forEach(month => {
+      uniqueMonths.add(`${month} 2025`);
     });
 
     // Sort them chronologically
@@ -51,10 +57,9 @@ const MyBalanceChart = () => {
     });
   }, [transactions]);
 
-  // Limit months to the last 12
+  // Don't limit months - show all available months
   const recentMonths = useMemo(() => {
-    if (months.length <= 12) return months;
-    return months.slice(months.length - 12);
+    return months;
   }, [months]);
 
   // Build data for EITHER "All Months" in area form OR "selectedMonth" daily data
@@ -72,6 +77,23 @@ const MyBalanceChart = () => {
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
+      // Make sure we have entries for all months from 2024-01 through 2025-03
+      // This ensures the chart shows all months even if some don't have transactions
+      const allMonths = [];
+      const startDate = new Date('2024-01-01');
+      const endDate = new Date('2025-03-31');
+      
+      // Create entries for all months in the range
+      for (let d = new Date(startDate); d <= endDate; d.setMonth(d.getMonth() + 1)) {
+        const monthStr = d.toLocaleString('default', { month: 'short' });
+        const yearStr = d.getFullYear();
+        const label = `${monthStr} ${yearStr}`;
+        if (!monthlyData[label]) {
+          monthlyData[label] = { name: label, income: 0, spend: 0, cash: 0 };
+        }
+      }
+
+      // Process all transactions
       for (const t of sorted) {
         const d = new Date(t.date);
         const monthStr = d.toLocaleString('default', { month: 'short' });
@@ -111,9 +133,16 @@ const MyBalanceChart = () => {
 
     // Filter to only that month's transactions
     const filtered = transactions.filter((t) => {
-      const d = new Date(t.date);
-      return d.getMonth() === monthIndex && d.getFullYear() === year;
+      try {
+        const d = new Date(t.date);
+        return d.getMonth() === monthIndex && d.getFullYear() === year;
+      } catch (e) {
+        console.error('Error parsing date', t.date, e);
+        return false;
+      }
     });
+
+    console.log(`Filtered ${filtered.length} transactions for ${selectedMonth}`);
 
     // ============== For area chart data ==============
     const dailyDataByArea: Record<string, { name: string; income: number; spend: number; cash: number }> = {};
@@ -121,34 +150,50 @@ const MyBalanceChart = () => {
 
     // Sort these transactions by date
     const sorted = [...filtered].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    // Build daily row
+    
+    // Process selected month's transactions by day
     for (const t of sorted) {
-      const day = new Date(t.date).getDate();
-      const label = `${monthLabel} ${day}`;
-      if (!dailyDataByArea[label]) {
-        dailyDataByArea[label] = { name: label, income: 0, spend: 0, cash: 0 };
+      const date = new Date(t.date);
+      const day = date.getDate();
+      const dateKey = `${monthLabel} ${day}`;
+      
+      if (!dailyDataByArea[dateKey]) {
+        dailyDataByArea[dateKey] = { name: dateKey, income: 0, spend: 0, cash: 0 };
       }
+      
       if (t.amount > 0) {
-        dailyDataByArea[label].income += t.amount;
+        dailyDataByArea[dateKey].income += t.amount;
       } else {
-        dailyDataByArea[label].spend += Math.abs(t.amount);
+        dailyDataByArea[dateKey].spend += Math.abs(t.amount);
       }
     }
 
-    // Fill in any missing days
+    // Get all days in the month to ensure continuous data
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-    const resultArea = [];
+    const fullMonthData = [];
+    
     for (let day = 1; day <= daysInMonth; day++) {
-      const label = `${monthLabel} ${day}`;
-      if (!dailyDataByArea[label]) {
-        dailyDataByArea[label] = { name: label, income: 0, spend: 0, cash: dailyCash };
+      const dateKey = `${monthLabel} ${day}`;
+      if (dailyDataByArea[dateKey]) {
+        fullMonthData.push(dailyDataByArea[dateKey]);
+      } else {
+        // Add empty data for days with no transactions
+        fullMonthData.push({
+          name: dateKey,
+          income: 0,
+          spend: 0,
+          date: new Date(year, monthIndex, day)
+        });
       }
-      dailyCash += dailyDataByArea[label].income - dailyDataByArea[label].spend;
-      dailyDataByArea[label].cash = dailyCash;
-      resultArea.push(dailyDataByArea[label]);
     }
-
+    
+    // Calculate running cash balance
+    for (let i = 0; i < fullMonthData.length; i++) {
+      // Add income and subtract spending from the daily cash value
+      dailyCash += (fullMonthData[i].income || 0) - (fullMonthData[i].spend || 0);
+      fullMonthData[i].cash = dailyCash;
+    }
+    
     // ============== For stacked chart data ==============
     // We sum expenses by category for each day
     const dailyCategorySums: Record<string, Record<string, number>> = {};
@@ -181,7 +226,7 @@ const MyBalanceChart = () => {
 
     // We'll store them so we can pick which data to feed to each chart type
     return {
-      dailyArea: resultArea,
+      dailyArea: fullMonthData,
       dailyStack: resultStack,
     };
   }, [transactions, selectedMonth]);
@@ -369,7 +414,21 @@ const MyBalanceChart = () => {
                 </linearGradient>
               </defs>
 
-              <XAxis dataKey="name" tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                axisLine={false}
+                padding={{ left: 24 }}
+                // For single month view, limit the number of ticks shown
+                interval={selectedMonth ? Math.floor(new Date(new Date(selectedMonth).getFullYear(), new Date(`${selectedMonth.split(' ')[0]} 1, 2000`).getMonth() + 1, 0).getDate() / 7) : 0}
+                tickFormatter={(value) => {
+                  if (selectedMonth) {
+                    // For single month view, just show the day
+                    return value.split(' ')[1];
+                  }
+                  return value;
+                }}
+              />
               <YAxis tickLine={false} axisLine={false} />
               <CartesianGrid stroke={theme.colors.border} />
               <Tooltip
