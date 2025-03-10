@@ -71,9 +71,10 @@ export const StyledMyBalanceChart = styled.div`
   .legends {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1.5rem;
     margin-left: auto;
-    position: absolute;
+    position: relative;
     right: 0;
     z-index: 2;
 
@@ -107,6 +108,12 @@ export const StyledMyBalanceChart = styled.div`
   .spend {
     span {
       background-color: #5d2ac9;
+    }
+  }
+
+  .cash {
+    span {
+      background-color: #FFCB57;
     }
   }
 `;
