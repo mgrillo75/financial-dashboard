@@ -14,7 +14,6 @@ const Dashboard = () => {
       <StyledDashboard>
         <h2>Overview</h2>
 
-        <MyCards />
         <MyBalanceChart />
 
         <div className="footer-charts">
@@ -22,6 +21,8 @@ const Dashboard = () => {
           <MonthlyIncomeChart />
           <MySalesChart />
         </div>
+        
+        <MyCards />
       </StyledDashboard>
 
       <Navigation />

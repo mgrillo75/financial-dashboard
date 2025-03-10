@@ -39,24 +39,43 @@ Credit,John Doe,1234 5678 9012 3456,05/2024
 Debit,Jane Smith,9876 5432 1098 7654,12/2025
 ```
 
-### 2. Place Your CSV File in the Project Directory
+### 2. Place Your CSV File in the Public Directory
 
-Copy your CSV file to the project root directory.
+Copy your CSV file to the `public` directory of the project. The application is configured to look for a file named `combined_truist_statements.csv` in this location.
 
-### 3. Update the Conversion Script
+If you're using a different filename, you'll need to update the `csvFilePath` variable in `truist-to-json.js`.
 
-Edit the `csv-to-json.js` file and update the `csvFilePath` variable to point to your CSV file:
+### 3. Use Automatic Data Processing (Recommended)
 
-```javascript
-const csvFilePath = './your-financial-data.csv'; // Change this to your file name
+The application now supports automatic data processing on startup. You can use either the JavaScript or Python launcher:
+
+#### Python Launcher (Recommended)
+```bash
+# Start with Python launcher (recommended)
+npm run start:py
+# or
+yarn start:py
 ```
 
-### 4. Run the Conversion Script
+#### JavaScript Launcher (Alternative)
+```bash
+# Start with JavaScript launcher
+npm run start
+# or
+yarn start
+```
 
-Open a terminal in your project directory and run:
+Both options will:
+1. Check for the `combined_truist_statements.csv` file in the `public` directory
+2. Process the CSV file and update the `db.json` database
+3. Start both the backend and frontend servers
+
+### 4. Manually Run the Conversion Script (Alternative)
+
+If you prefer to run the conversion process manually:
 
 ```bash
-node csv-to-json.js
+node truist-to-json.js
 ```
 
 This will:
@@ -65,20 +84,17 @@ This will:
 3. Save it to `db.json`
 4. Show a preview of the first converted record
 
-### 5. Restart the JSON Server
+### 5. Verify Your Data
 
-If your JSON Server is already running, you'll need to restart it to pick up the new data:
+After the automatic or manual conversion, visit `http://localhost:4000/cards` or `http://localhost:4000/transactions` in your browser to make sure your data is available via the API.
 
-1. Stop the current JSON Server (press Ctrl+C in the terminal where it's running)
-2. Start it again with:
+## Updating Your Data
 
-```bash
-npm run dev:back
-```
+When you receive new transactions:
 
-### 6. Verify Your Data
-
-Visit `http://localhost:4000/cards` in your browser to make sure your data is available via the API.
+1. Append the new transactions to your `public/combined_truist_statements.csv` file
+2. Restart the application using `npm run start` or `yarn start`
+3. The dashboard will automatically incorporate the new data
 
 ## Troubleshooting
 

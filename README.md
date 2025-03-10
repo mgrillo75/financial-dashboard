@@ -69,9 +69,47 @@ npm run dev
 
 - `yarn dev` - Starts the frontend development server
 - `yarn dev:back` - Starts the JSON server for mock API (runs on port 4000)
+- `yarn dev:refresh` - Processes CSV data and starts both servers (JavaScript version)
+- `yarn start` - Same as dev:refresh, ideal for regular use with JavaScript
+- `yarn start:py` - **Processes CSV data and starts both servers using Python** (recommended)
 - `yarn build` - Creates a production build
 - `yarn lint` - Runs the linter
 - `yarn preview` - Previews the production build locally
+- `yarn test:refresh` - Tests the data processing without starting servers
+
+## 🔄 CSV Data Processing
+
+The application now supports automatic data processing on startup. When you run `yarn start`, `yarn dev:refresh`, or `yarn start:py` the application will:
+
+1. Check for the `combined_truist_statements.csv` file in the `public` directory
+2. Process the CSV file and update the `db.json` database
+3. Start both the backend and frontend servers
+
+This ensures any new data in your CSV file is automatically incorporated into the dashboard every time you start the application.
+
+### Using the Python Launcher (Recommended)
+
+For those who prefer a more robust launcher with better process management:
+
+```bash
+yarn start:py
+# or
+npm run start:py
+```
+
+The Python launcher provides:
+- Automatic CSV data processing
+- Cleaner console output with color coding
+- Better process management
+- Automatic browser opening
+
+### Adding New Transactions
+
+To add new transactions:
+
+1. Update your `public/combined_truist_statements.csv` file with new transaction data
+2. Run `yarn start` to process the new data and launch the application
+3. The dashboard will now display the updated information
 
 ## 🔍 Project Structure
 
