@@ -21,22 +21,23 @@ export const StyledMyBalanceChart = styled.div`
     flex-wrap: nowrap;
     max-width: 100%;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
     
-    /* Show a subtle scrollbar instead of hiding it */
+    /* Hide scrollbar for Chrome, Safari and Opera */
     &::-webkit-scrollbar {
-      height: 6px;
-      display: block;
+      height: 0;
+      display: none;
     }
     
-    &::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-    }
-    
-    /* For Firefox and other browsers */
-    -ms-overflow-style: auto;  /* IE and Edge */
-    scrollbar-width: thin;     /* Firefox */
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .chart-type-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .month-button {

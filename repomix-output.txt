@@ -1,0 +1,5209 @@
+Analyze all of the code below, then implement the following:
+
+when a user drills in to a specific month, I want there to be 2 buttons from which they can choose one.
+One of the buttons displays the month using the current graph with 3 shaded areas,
+the other button would use a Stacked Vertical Chart with a stack at each day representing the expenses of that day
+
+
+================================================================
+Repository Structure
+================================================================
+.editorconfig
+.eslintrc.cjs
+.gitignore
+.prettierrc
+app/components/GraphComponent.tsx
+CSV-DATA-IMPORT-GUIDE.md
+csv-to-json.js
+index.html
+launch.bat
+public/logo.svg
+README.md
+src/App.tsx
+src/assets/icons/furniture-icon.svg
+src/assets/icons/internet-icon.svg
+src/assets/icons/laundry-icon.svg
+src/assets/icons/medical-icon.svg
+src/assets/icons/veterinary-icon.svg
+src/assets/images/MasterCard.svg
+src/assets/react.svg
+src/components/ChartComponent.js
+src/components/Container/index.tsx
+src/components/Container/style.ts
+src/components/Layout/Header/components/OpenSidebarButton.tsx
+src/components/Layout/Header/index.tsx
+src/components/Layout/Header/style.ts
+src/components/Layout/Sidebar/index.tsx
+src/components/Layout/Sidebar/style.ts
+src/components/Layout/Skeleton/components/SkeletonCard.tsx
+src/components/Layout/Skeleton/components/SkeletonCharts/index.tsx
+src/components/Layout/Skeleton/index.tsx
+src/components/Layout/Skeleton/SkeletonNavigation.tsx
+src/components/Layout/Skeleton/style.ts
+src/components/Modal/index.tsx
+src/components/Modal/style.ts
+src/components/MyCards/index.tsx
+src/components/MyCards/style.ts
+src/constants/breakpoints.ts
+src/contexts/DashboardContext.tsx
+src/contexts/GlobalContext.tsx
+src/hooks/useDashboardContext.ts
+src/hooks/useGlobalContext.ts
+src/main.tsx
+src/mock/dashboard/index.ts
+src/mock/menu.ts
+src/pages/cards/index.tsx
+src/pages/dashboard/components/Card/Form.tsx
+src/pages/dashboard/components/Card/index.tsx
+src/pages/dashboard/components/Card/style.ts
+src/pages/dashboard/components/Charts/MonthlyExpenses/index.tsx
+src/pages/dashboard/components/Charts/MonthlyExpenses/style.ts
+src/pages/dashboard/components/Charts/MonthlyIncome/index.tsx
+src/pages/dashboard/components/Charts/MonthlyIncome/style.ts
+src/pages/dashboard/components/Charts/MyBalance/index.tsx
+src/pages/dashboard/components/Charts/MyBalance/style.ts
+src/pages/dashboard/components/Charts/MySales/index.tsx
+src/pages/dashboard/components/Charts/MySales/style.ts
+src/pages/dashboard/components/Divider/index.tsx
+src/pages/dashboard/components/Divider/style.ts
+src/pages/dashboard/components/Navigation/Navigation.tsx
+src/pages/dashboard/components/Navigation/style.ts
+src/pages/dashboard/page.tsx
+src/pages/dashboard/style.ts
+src/pages/pageNotFound/page.tsx
+src/pages/pageNotFound/style.ts
+src/pages/settings/index.tsx
+src/pages/support/index.tsx
+src/pages/users/index.tsx
+src/router.tsx
+src/services/api.ts
+src/styles/global.ts
+src/styles/theme.ts
+src/types/Cards.ts
+src/types/children.ts
+src/utils/createSidebarMenu.tsx
+src/utils/currencyFormat.ts
+src/utils/DateFormat.ts
+src/utils/Providers.tsx
+src/vite-env.d.ts
+start-back-front.py
+start-with-refresh.js
+test-data-refresh.js
+truist-to-json.js
+vite.config.ts
+
+================================================================
+Repository Files
+================================================================
+
+================
+File: .editorconfig
+================
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+================
+File: .eslintrc.cjs
+================
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh'],
+  rules: {
+    'react-refresh/only-export-components': [
+      'warn',
+      { allowConstantExport: true },
+    ],
+  },
+}
+
+================
+File: .gitignore
+================
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+
+================
+File: .prettierrc
+================
+{
+  "semi": true,
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "printWidth": 80,
+  "tabWidth": 2
+}
+
+================
+File: app/components/GraphComponent.tsx
+================
+import { useState, useEffect } from 'react';
+import { format, subMonths, isAfter } from 'date-fns';
+
+const GraphComponent = () => {
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const twelveMonthsAgo = subMonths(currentDate, 12);
+
+    const recentData = data.filter(item => {
+      const itemDate = new Date(item.date);
+      return isAfter(itemDate, twelveMonthsAgo);
+    });
+
+    setFilteredData(recentData);
+  }, [data]);
+
+  return (
+    <div>
+      {filteredData.map(item => (
+        <button key={item.date}>{format(new Date(item.date), 'MMM yyyy')}</button>
+      ))}
+    </div>
+  );
+};
+
+export default GraphComponent;
+
+================
+File: CSV-DATA-IMPORT-GUIDE.md
+================
+# Guide to Importing CSV Financial Data
+
+This guide will help you import your CSV financial data into the Financial Dashboard application.
+
+## Current Data Structure
+
+The Financial Dashboard is currently expecting data in the following JSON format:
+
+```json
+{
+  "cards": [
+    {
+      "id": "1",
+      "type": "Credit",
+      "userName": "User Name",
+      "password": "1234 5678 9012 3456",
+      "validate": "2024-05-30T23:47:55.991Z"
+    }
+  ]
+}
+```
+
+## Steps to Import Your CSV Data
+
+### 1. Prepare Your CSV File
+
+Your CSV file should have headers in the first row. The script will try to match your CSV headers to the expected JSON structure.
+
+Ideal CSV format should have columns for:
+- Card type (credit/debit)
+- Card holder name
+- Card number
+- Expiry date
+
+Example:
+```
+Card Type,Holder Name,Card Number,Expiry Date
+Credit,John Doe,1234 5678 9012 3456,05/2024
+Debit,Jane Smith,9876 5432 1098 7654,12/2025
+```
+
+### 2. Place Your CSV File in the Public Directory
+
+Copy your CSV file to the `public` directory of the project. The application is configured to look for a file named `combined_truist_statements.csv` in this location.
+
+If you're using a different filename, you'll need to update the `csvFilePath` variable in `truist-to-json.js`.
+
+### 3. Use Automatic Data Processing (Recommended)
+
+The application now supports automatic data processing on startup. You can use either the JavaScript or Python launcher:
+
+#### Python Launcher (Recommended)
+```bash
+# Start with Python launcher (recommended)
+npm run start:py
+# or
+yarn start:py
+```
+
+#### JavaScript Launcher (Alternative)
+```bash
+# Start with JavaScript launcher
+npm run start
+# or
+yarn start
+```
+
+Both options will:
+1. Check for the `combined_truist_statements.csv` file in the `public` directory
+2. Process the CSV file and update the `db.json` database
+3. Start both the backend and frontend servers
+
+### 4. Manually Run the Conversion Script (Alternative)
+
+If you prefer to run the conversion process manually:
+
+```bash
+node truist-to-json.js
+```
+
+This will:
+1. Read your CSV file
+2. Convert it to the JSON format expected by the application
+3. Save it to `db.json`
+4. Show a preview of the first converted record
+
+### 5. Verify Your Data
+
+After the automatic or manual conversion, visit `http://localhost:4000/cards` or `http://localhost:4000/transactions` in your browser to make sure your data is available via the API.
+
+## Updating Your Data
+
+When you receive new transactions:
+
+1. Append the new transactions to your `public/combined_truist_statements.csv` file
+2. Restart the application using `npm run start` or `yarn start`
+3. The dashboard will automatically incorporate the new data
+
+## Troubleshooting
+
+If your CSV data structure doesn't match the expected format:
+
+1. Edit the `csv-to-json.js` file
+2. Modify the field mappings in the script (look for the "Handle common financial field mappings" section)
+3. Run the script again
+
+## Adding Other Types of Financial Data
+
+If you have other types of financial data beyond cards (like transactions, investments, etc.):
+
+1. Create a new conversion script based on `csv-to-json.js`
+2. Modify it to create a new array for your data type
+3. Add the new data to the `dbData` object (e.g., `dbData.transactions = transactions;`)
+4. Update the application code to fetch and display this new data type
+
+## Notes on Data Privacy
+
+The card information is being stored in the `password` field. For a production application, you should:
+
+1. Never store actual card numbers in plain text
+2. Use proper encryption for sensitive data
+3. Consider masking card numbers (e.g., only showing last 4 digits)
+
+This implementation is for development purposes only.
+
+================
+File: csv-to-json.js
+================
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
+
+// Update these values with your CSV file path and output JSON file path
+const csvFilePath = './your-financial-data.csv';
+const jsonOutputPath = './db.json';
+
+async function convertCsvToJson() {
+  try {
+    // Check if CSV file exists
+    if (!fs.existsSync(csvFilePath)) {
+      console.error(`CSV file not found: ${csvFilePath}`);
+      console.log('Please place your CSV file in the project directory and update the file path in csv-to-json.js');
+      return;
+    }
+
+    const fileStream = fs.createReadStream(csvFilePath);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+    });
+
+    // Read the header line to get column names
+    const headerLine = await new Promise(resolve => {
+      rl.once('line', line => {
+        resolve(line);
+      });
+    });
+
+    const headers = headerLine.split(',').map(header => header.trim());
+    
+    // Create an array to hold all data rows
+    const cards = [];
+    let id = 1;
+
+    // Process each line of the CSV
+    for await (const line of rl) {
+      const values = parseCSVLine(line);
+      
+      if (values.length !== headers.length) {
+        console.warn(`Skipping line with incorrect number of values: ${line}`);
+        continue;
+      }
+
+      // Create an object for this row
+      const card = { id: id.toString() };
+      
+      // Map CSV columns to JSON properties
+      headers.forEach((header, index) => {
+        // Convert header names to camelCase if needed
+        let propName = header.toLowerCase();
+        
+        // Handle common financial field mappings
+        // Modify these mappings based on your CSV structure
+        if (propName.includes('type')) propName = 'type';
+        if (propName.includes('name') || propName.includes('holder')) propName = 'userName';
+        if (propName.includes('number') || propName.includes('card number')) propName = 'password';
+        if (propName.includes('expiry') || propName.includes('date') || 
+            propName.includes('valid') || propName.includes('expires')) propName = 'validate';
+        
+        card[propName] = values[index];
+      });
+
+      // Convert date fields to ISO format if needed
+      if (card.validate && !card.validate.includes('T')) {
+        // Try to parse and convert date format
+        try {
+          const dateParts = card.validate.split(/[-/]/);
+          if (dateParts.length >= 2) {
+            // Assuming MM/YY or MM/YYYY format
+            let month = parseInt(dateParts[0], 10);
+            let year = parseInt(dateParts[1], 10);
+            
+            // Handle 2-digit years
+            if (year < 100) year += 2000;
+            
+            const expiryDate = new Date(year, month - 1, 28); // Last day of month
+            card.validate = expiryDate.toISOString();
+          }
+        } catch (e) {
+          console.warn(`Could not parse date: ${card.validate}`);
+        }
+      }
+
+      cards.push(card);
+      id++;
+    }
+
+    // Read existing db.json if it exists
+    let dbData = {};
+    if (fs.existsSync(jsonOutputPath)) {
+      try {
+        const existingData = fs.readFileSync(jsonOutputPath, 'utf8');
+        dbData = JSON.parse(existingData);
+      } catch (err) {
+        console.warn('Could not parse existing db.json, creating a new one');
+      }
+    }
+
+    // Add the cards data
+    dbData.cards = cards;
+
+    // Write to db.json
+    fs.writeFileSync(jsonOutputPath, JSON.stringify(dbData, null, 2));
+    
+    console.log(`Successfully converted CSV to JSON. Output saved to ${jsonOutputPath}`);
+    console.log(`Found ${cards.length} records.`);
+    
+    // Quick preview of the first record
+    if (cards.length > 0) {
+      console.log('\nPreview of first record:');
+      console.log(JSON.stringify(cards[0], null, 2));
+    }
+    
+  } catch (error) {
+    console.error('Error during conversion:', error);
+  }
+}
+
+// Helper function to handle CSV lines properly (accounts for quoted values with commas)
+function parseCSVLine(line) {
+  const values = [];
+  let inQuote = false;
+  let currentValue = '';
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuote = !inQuote;
+    } else if (char === ',' && !inQuote) {
+      values.push(currentValue.trim());
+      currentValue = '';
+    } else {
+      currentValue += char;
+    }
+  }
+  
+  // Add the last value
+  values.push(currentValue.trim());
+  
+  return values;
+}
+
+// Run the conversion
+convertCsvToJson();
+
+================
+File: index.html
+================
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Financial Dashboard</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+================
+File: launch.bat
+================
+@echo off
+echo Starting Financial Dashboard...
+echo.
+echo Starting Backend (JSON Server)...
+start cmd /k "npm run dev:back"
+echo.
+echo Starting Frontend (Vite Dev Server)...
+start cmd /k "npm run dev"
+echo.
+echo Both services started successfully!
+echo - Backend running on http://localhost:4000
+echo - Frontend running on http://localhost:5173
+echo.
+echo Waiting for services to initialize...
+timeout /t 5 /nobreak > nul
+echo Opening application in your default browser...
+start http://localhost:5173
+echo.
+echo Press any key to close this window...
+pause > nul
+
+================
+File: public/logo.svg
+================
+<svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="54" height="54" rx="16" fill="#864CFF"/>
+<path d="M31.0625 26.1094V35.125C30.7083 35.5521 30.1615 36.0156 29.4219 36.5156C28.6823 37.0052 27.7292 37.4271 26.5625 37.7812C25.3958 38.1354 23.9844 38.3125 22.3281 38.3125C20.8594 38.3125 19.5208 38.0729 18.3125 37.5938C17.1042 37.1042 16.0625 36.3906 15.1875 35.4531C14.3229 34.5156 13.6562 33.3698 13.1875 32.0156C12.7188 30.651 12.4844 29.0938 12.4844 27.3438V25.9219C12.4844 24.1719 12.7083 22.6146 13.1562 21.25C13.6146 19.8854 14.2656 18.7344 15.1094 17.7969C15.9531 16.8594 16.9583 16.1458 18.125 15.6562C19.2917 15.1667 20.5885 14.9219 22.0156 14.9219C23.9948 14.9219 25.6198 15.2448 26.8906 15.8906C28.1615 16.526 29.1302 17.4115 29.7969 18.5469C30.474 19.6719 30.8906 20.9635 31.0469 22.4219H26.5C26.3854 21.651 26.1667 20.9792 25.8438 20.4062C25.5208 19.8333 25.0573 19.3854 24.4531 19.0625C23.8594 18.7396 23.0885 18.5781 22.1406 18.5781C21.3594 18.5781 20.6615 18.7396 20.0469 19.0625C19.4427 19.375 18.9323 19.8385 18.5156 20.4531C18.099 21.0677 17.7812 21.8281 17.5625 22.7344C17.3438 23.6406 17.2344 24.6927 17.2344 25.8906V27.3438C17.2344 28.5312 17.349 29.5833 17.5781 30.5C17.8073 31.4062 18.1458 32.1719 18.5938 32.7969C19.0521 33.4115 19.6146 33.875 20.2812 34.1875C20.9479 34.5 21.724 34.6562 22.6094 34.6562C23.349 34.6562 23.9635 34.5938 24.4531 34.4688C24.9531 34.3438 25.3542 34.1927 25.6562 34.0156C25.9688 33.8281 26.2083 33.651 26.375 33.4844V29.4531H22.0938V26.1094H31.0625ZM34.7812 35.8281C34.7812 35.1615 35.0104 34.6042 35.4688 34.1562C35.9375 33.7083 36.5573 33.4844 37.3281 33.4844C38.099 33.4844 38.7135 33.7083 39.1719 34.1562C39.6406 34.6042 39.875 35.1615 39.875 35.8281C39.875 36.4948 39.6406 37.0521 39.1719 37.5C38.7135 37.9479 38.099 38.1719 37.3281 38.1719C36.5573 38.1719 35.9375 37.9479 35.4688 37.5C35.0104 37.0521 34.7812 36.4948 34.7812 35.8281Z" fill="#F5F5F5"/>
+</svg>
+
+================
+File: README.md
+================
+<h1 align="center">
+    <img src="https://ik.imagekit.io/dzojbyqyz/cover.png?updatedAt=1713803120525">
+   
+</h1>
+
+# Financial Dashboard
+
+A modern financial dashboard application built with React, TypeScript, and styled-components.
+
+## 🔗 Live Demo
+
+[Financial Dashboard](https://financial-dashboard-pi-seven.vercel.app/)
+
+## 📖 About
+
+This project is a financial dashboard that helps users manage their financial information, including credit and debit cards. It provides a clean interface for viewing and organizing financial data.
+
+## 🚀 Technology Stack
+
+- [React](https://reactjs.org)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Styled Components](https://styled-components.com/)
+- [Vite](https://vitejs.dev/)
+- [React Router](https://reactrouter.com/)
+- [Recharts](https://recharts.org/) - For data visualization
+- [React Hook Form](https://react-hook-form.com/) - For form handling
+- [Zod](https://zod.dev/) - For form validation
+- [JSON Server](https://github.com/typicode/json-server) - For mock API
+
+## 🛠️ Setup and Installation
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- Yarn or npm
+
+### Installation Steps
+
+1. Clone the repository
+```bash
+git clone https://github.com/renanvilelati/financial-dashboard
+cd financial-dashboard
+```
+
+2. Install dependencies
+```bash
+yarn
+# or using npm
+npm install
+```
+
+3. Start the mock backend server
+```bash
+yarn dev:back
+# or using npm
+npm run dev:back
+```
+
+4. In a new terminal, start the frontend development server
+```bash
+yarn dev
+# or using npm
+npm run dev
+```
+
+5. Open your browser and navigate to `http://localhost:5173` (or the URL shown in your terminal)
+
+## 📋 Available Scripts
+
+- `yarn dev` - Starts the frontend development server
+- `yarn dev:back` - Starts the JSON server for mock API (runs on port 4000)
+- `yarn dev:refresh` - Processes CSV data and starts both servers (JavaScript version)
+- `yarn start` - Same as dev:refresh, ideal for regular use with JavaScript
+- `yarn start:py` - **Processes CSV data and starts both servers using Python** (recommended)
+- `yarn build` - Creates a production build
+- `yarn lint` - Runs the linter
+- `yarn preview` - Previews the production build locally
+- `yarn test:refresh` - Tests the data processing without starting servers
+
+## 🔄 CSV Data Processing
+
+The application now supports automatic data processing on startup. When you run `yarn start`, `yarn dev:refresh`, or `yarn start:py` the application will:
+
+1. Check for the `combined_truist_statements.csv` file in the `public` directory
+2. Process the CSV file and update the `db.json` database
+3. Start both the backend and frontend servers
+
+This ensures any new data in your CSV file is automatically incorporated into the dashboard every time you start the application.
+
+### Using the Python Launcher (Recommended)
+
+For those who prefer a more robust launcher with better process management:
+
+```bash
+yarn start:py
+# or
+npm run start:py
+```
+
+The Python launcher provides:
+- Automatic CSV data processing
+- Cleaner console output with color coding
+- Better process management
+- Automatic browser opening
+
+### Adding New Transactions
+
+To add new transactions:
+
+1. Update your `public/combined_truist_statements.csv` file with new transaction data
+2. Run `yarn start` to process the new data and launch the application
+3. The dashboard will now display the updated information
+
+## 🔍 Project Structure
+
+- `/src` - Source code
+  - `/assets` - Static assets
+  - `/components` - Reusable UI components
+  - `/contexts` - React contexts
+  - `/hooks` - Custom React hooks
+  - `/mock` - Mock data
+  - `/pages` - Page components
+  - `/services` - API services
+  - `/styles` - Global styles
+  - `/types` - TypeScript type definitions
+  - `/utils` - Utility functions
+
+## 📋 Planned Updates
+
+- [ ] Add mobile menu support
+- [ ] Create horizontal scroll for card section
+
+## 🧑‍💻 Author
+
+Developed by Renan Vilela
+
+================
+File: src/App.tsx
+================
+import { AppRouter } from './router';
+import Providers from './utils/Providers';
+
+function App() {
+  return (
+    <Providers>
+      <AppRouter />
+    </Providers>
+  );
+}
+
+export default App;
+
+================
+File: src/assets/icons/furniture-icon.svg
+================
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 11C6.10457 11 7 11.8954 7 13V14.5C7 14.7761 7.22386 15 7.5 15H16.5C16.7761 15 17 14.7761 17 14.5V13C17 11.8954 17.8954 11 19 11M5 11C3.89543 11 3 11.8954 3 13V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V13C21 11.8954 20.1046 11 19 11M5 11V10C5 6.13401 8.13401 3 12 3C15.866 3 19 6.13401 19 10V11M11 8H13M6 19V21M18 19V21" stroke="#FF715E" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
+================
+File: src/assets/icons/internet-icon.svg
+================
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.99998 19.1667C15.0626 19.1667 19.1666 15.0626 19.1666 10C19.1666 4.9374 15.0626 0.833344 9.99998 0.833344M9.99998 19.1667C4.93737 19.1667 0.833313 15.0626 0.833313 10C0.833313 4.9374 4.93737 0.833344 9.99998 0.833344M9.99998 19.1667C11.8409 19.1667 13.3333 15.0626 13.3333 10C13.3333 4.9374 11.8409 0.833344 9.99998 0.833344M9.99998 19.1667C8.15903 19.1667 6.66665 15.0626 6.66665 10C6.66665 4.9374 8.15903 0.833344 9.99998 0.833344M1.66665 6.66668H18.3333M1.66665 12.5H18.3333" stroke="#87FFDB" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
+================
+File: src/assets/icons/laundry-icon.svg
+================
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 21H8.00003C6.89546 21 6.00003 20.1046 6.00003 19V11.5671C6.00003 10.9888 5.30084 10.6992 4.89193 11.1081C4.5186 11.4814 3.87946 11.2766 3.79266 10.7558L3.22389 7.34318C3.08881 6.53273 3.46315 5.72212 4.16769 5.2994L7.81457 3.11127C7.92078 3.04754 8.05775 3.07216 8.13513 3.16888C10.1165 5.64563 13.8835 5.64563 15.8649 3.16888C15.9423 3.07216 16.0793 3.04754 16.1855 3.11127L19.8324 5.2994C20.5369 5.72212 20.9112 6.53273 20.7762 7.34318L20.2074 10.7558C20.1206 11.2766 19.4815 11.4814 19.1081 11.1081C18.6992 10.6992 18 10.9888 18 11.5671V19C18 20.1046 17.1046 21 16 21Z" stroke="#25D757" stroke-width="1.5"/>
+</svg>
+
+================
+File: src/assets/icons/medical-icon.svg
+================
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.39683 15C8.25864 16.8314 10.5539 18.8797 11.5249 19.7368C11.6882 19.881 11.7699 19.9531 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9531 12.2994 19.881 12.4628 19.7368C13.4337 18.8797 15.729 16.8314 17.5908 15C18.5288 14.0774 19.3567 13.2097 19.8499 12.5771C20.231 12.0883 20.5172 11.555 20.7087 11H13.309C13.1196 11 12.9465 11.107 12.8618 11.2764L11.4821 14.0358C11.2917 14.4165 10.743 14.4004 10.5753 14.0091L8.3636 8.84839C8.20719 8.48343 7.70825 8.43762 7.488 8.768L6.14843 10.7774C6.0557 10.9164 5.89958 11 5.73241 11H3.28242C3.06092 10.3506 2.9704 9.67199 3.00843 9C3.08859 7.58373 3.73975 6.19689 4.93923 5.17528C7.19377 3.25504 10.1944 3.81913 11.9938 5.91615C13.7933 3.81913 16.7551 3.27524 19.0484 5.17528C19.68 5.69854 20.1588 6.32273 20.484 7" stroke="#FF78C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+================
+File: src/assets/icons/veterinary-icon.svg
+================
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 6.47442C20.2511 5.41087 19.3184 4.48604 18.2481 3.74609C17.5346 3.25279 16.5844 3.41555 15.9711 4.02891L15 4.99999M3 6.47442C3.74895 5.41087 4.68165 4.48604 5.75193 3.74609C6.46544 3.25279 7.41555 3.41555 8.02892 4.02891L9 4.99999M9 11V12M15 11V12M11 14H13M10.5 17C11.3284 17 12 16.3284 12 15.5M12 15.5C12 16.3284 12.6716 17 13.5 17M12 15.5V14M20 13C20 17.4183 16.4183 21 12 21C7.58172 21 4 17.4183 4 13C4 8.58172 7.58172 4.99999 12 4.99999C16.4183 4.99999 20 8.58172 20 13Z" stroke="#B18CFF" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
+================
+File: src/assets/images/MasterCard.svg
+================
+<svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.54996 41.5843V39.1638C8.56417 38.9602 8.53479 38.7559 8.46381 38.5646C8.39284 38.3733 8.28188 38.1993 8.13834 38.0542C7.99481 37.9091 7.82199 37.7964 7.63142 37.7234C7.44085 37.6504 7.23692 37.6188 7.0332 37.6309C6.76659 37.6135 6.50019 37.668 6.26179 37.7886C6.02339 37.9092 5.82171 38.0915 5.67777 38.3166C5.54658 38.0983 5.35894 37.9193 5.1346 37.7986C4.91025 37.6779 4.65752 37.62 4.40301 37.6309C4.18115 37.6197 3.96022 37.6667 3.76211 37.7672C3.564 37.8677 3.39556 38.0181 3.27347 38.2037V37.7277H2.43436V41.5843H3.2815V39.4462C3.26318 39.3142 3.27432 39.1799 3.31409 39.0528C3.35387 38.9256 3.4213 38.8089 3.51155 38.7109C3.6018 38.613 3.71262 38.5362 3.83606 38.4862C3.9595 38.4362 4.0925 38.4141 4.22548 38.4215C4.78218 38.4215 5.0646 38.7846 5.0646 39.4381V41.5843H5.91174V39.4462C5.8948 39.3145 5.9069 39.1807 5.94718 39.0542C5.98746 38.9276 6.05496 38.8115 6.14492 38.7138C6.23488 38.6162 6.34513 38.5394 6.46793 38.4889C6.59072 38.4384 6.72308 38.4154 6.85571 38.4215C7.42851 38.4215 7.70282 38.7846 7.70282 39.4381V41.5843H8.54996ZM21.0878 37.7277H19.7162V36.5578H18.8691V37.7277H18.0864V38.4942H18.8691V40.253C18.8691 41.1485 19.216 41.6811 20.2084 41.6811C20.5791 41.6822 20.9426 41.5787 21.2572 41.3825L21.0152 40.6645C20.7902 40.7987 20.5348 40.8737 20.2729 40.8823C19.8534 40.8823 19.7162 40.6241 19.7162 40.2369V38.4942H21.0878V37.7277ZM28.2442 37.6309C28.0396 37.6248 27.8372 37.6741 27.6583 37.7735C27.4794 37.8729 27.3306 38.0188 27.2276 38.1956V37.7277H26.3966V41.5843H27.2357V39.422C27.2357 38.7846 27.51 38.4296 28.0587 38.4296C28.2381 38.4271 28.4163 38.46 28.583 38.5264L28.8412 37.7357C28.6496 37.6672 28.4477 37.6317 28.2442 37.6309ZM17.4249 38.0343C16.9499 37.7519 16.4039 37.6118 15.8516 37.6309C14.8754 37.6309 14.2461 38.0988 14.2461 38.8653C14.2461 39.4946 14.714 39.8819 15.5772 40.0029L15.9726 40.0593C16.4325 40.1238 16.6503 40.2449 16.6503 40.4627C16.6503 40.7612 16.3437 40.9307 15.7709 40.9307C15.3101 40.944 14.8583 40.8019 14.4881 40.5273L14.0928 41.1808C14.5815 41.5221 15.1669 41.6975 15.7628 41.6811C16.8762 41.6811 17.5216 41.1566 17.5216 40.4224C17.5216 39.7447 17.0134 39.3897 16.1743 39.2686L15.779 39.2122C15.4159 39.1638 15.1255 39.0912 15.1255 38.8331C15.1255 38.5506 15.3997 38.3812 15.8597 38.3812C16.282 38.3876 16.6957 38.5014 17.0618 38.712L17.4249 38.0343ZM39.9025 37.6309C39.698 37.6248 39.4955 37.6741 39.3166 37.7735C39.1377 37.8729 38.9889 38.0188 38.886 38.1956V37.7277H38.055V41.5843H38.894V39.422C38.894 38.7846 39.1684 38.4296 39.7169 38.4296C39.8964 38.4271 40.0747 38.46 40.2415 38.5264L40.4996 37.7357C40.308 37.6672 40.1061 37.6317 39.9025 37.6309ZM29.0913 39.6559C29.0801 39.9276 29.126 40.1986 29.2259 40.4515C29.3258 40.7044 29.4775 40.9336 29.6713 41.1244C29.865 41.3151 30.0966 41.4632 30.3511 41.5591C30.6055 41.655 30.8772 41.6965 31.1487 41.6811C31.6525 41.7064 32.1475 41.5423 32.5364 41.2211L32.133 40.5434C31.8429 40.7645 31.4892 40.8862 31.1245 40.8903C30.81 40.8713 30.5147 40.7329 30.2988 40.5035C30.0829 40.2741 29.9627 39.971 29.9627 39.6559C29.9627 39.3409 30.0829 39.0378 30.2988 38.8084C30.5147 38.579 30.81 38.4406 31.1245 38.4215C31.4892 38.4257 31.8429 38.5473 32.133 38.7685L32.5364 38.0907C32.1474 37.7696 31.6525 37.6056 31.1487 37.6309C30.8773 37.6154 30.6056 37.657 30.3511 37.7529C30.0967 37.8487 29.8651 37.9968 29.6713 38.1875C29.4775 38.3782 29.3258 38.6074 29.2259 38.8603C29.126 39.1132 29.0802 39.3842 29.0913 39.6559ZM36.9496 39.6559V37.7277H36.1105V38.1956C35.9673 38.0111 35.782 37.8635 35.57 37.7652C35.3581 37.667 35.1257 37.6209 34.8923 37.6309C34.3723 37.6564 33.8821 37.8809 33.5232 38.2578C33.1642 38.6348 32.964 39.1354 32.964 39.656C32.964 40.1765 33.1642 40.6771 33.5232 41.0541C33.8821 41.4311 34.3723 41.6556 34.8923 41.6811C35.1257 41.691 35.3581 41.645 35.57 41.5467C35.782 41.4484 35.9673 41.3008 36.1105 41.1162V41.5843H36.9496V39.6559ZM33.8273 39.6559C33.8403 39.4283 33.9196 39.2095 34.0555 39.0265C34.1914 38.8435 34.3778 38.7042 34.5919 38.6259C34.806 38.5476 35.0383 38.5336 35.2602 38.5858C35.4821 38.6379 35.6839 38.7539 35.8407 38.9193C35.9975 39.0847 36.1024 39.2925 36.1426 39.5169C36.1828 39.7412 36.1564 39.9725 36.0667 40.182C35.977 40.3916 35.828 40.5703 35.6379 40.6962C35.4479 40.822 35.2251 40.8895 34.9972 40.8903C34.8374 40.8925 34.6789 40.8616 34.5317 40.7994C34.3845 40.7373 34.2518 40.6453 34.1418 40.5294C34.0319 40.4134 33.9472 40.2759 33.8931 40.1256C33.8389 39.9752 33.8165 39.8153 33.8273 39.6559ZM23.7019 37.6309C23.1786 37.6584 22.6864 37.8875 22.3284 38.2702C21.9704 38.6528 21.7745 39.1592 21.7818 39.6832C21.7891 40.2071 21.999 40.7078 22.3676 41.0803C22.7361 41.4528 23.2345 41.6681 23.7584 41.6811C24.334 41.7013 24.8969 41.5088 25.3397 41.1404L24.9282 40.5192C24.6096 40.7746 24.215 40.9165 23.8067 40.9226C23.5295 40.9459 23.254 40.8605 23.0387 40.6843C22.8233 40.5081 22.685 40.255 22.653 39.9786H25.5172C25.5253 39.8738 25.5333 39.7689 25.5333 39.6559C25.5253 38.4538 24.783 37.6309 23.7019 37.6309ZM23.6857 38.3812C23.9391 38.3763 24.1842 38.472 24.3672 38.6474C24.5502 38.8229 24.6562 39.0637 24.662 39.3171H22.6611C22.6758 39.0582 22.7912 38.8153 22.9827 38.6404C23.1742 38.4655 23.4265 38.3725 23.6857 38.3812ZM44.7353 39.6559V36.1787H43.8962V38.1956C43.753 38.0111 43.5677 37.8635 43.3557 37.7652C43.1438 37.667 42.9114 37.6209 42.678 37.6309C42.158 37.6563 41.6678 37.8808 41.3088 38.2578C40.9499 38.6348 40.7497 39.1354 40.7497 39.656C40.7497 40.1765 40.9499 40.6772 41.3088 41.0541C41.6678 41.4311 42.158 41.6556 42.678 41.6811C42.9114 41.691 43.1438 41.645 43.3557 41.5467C43.5677 41.4484 43.753 41.3008 43.8962 41.1162V41.5843H44.7353V39.6559ZM46.134 41.0253C46.1862 41.025 46.2378 41.0352 46.2858 41.0554C46.332 41.0747 46.3741 41.1026 46.4099 41.1376C46.4453 41.1726 46.4737 41.214 46.4934 41.2598C46.5136 41.3067 46.524 41.3573 46.524 41.4084C46.524 41.4596 46.5136 41.5102 46.4934 41.5571C46.4736 41.6026 46.4452 41.6439 46.4099 41.6788C46.374 41.7138 46.332 41.7418 46.2858 41.7614C46.2379 41.7819 46.1862 41.7924 46.134 41.792C46.0573 41.7928 45.982 41.7709 45.9176 41.7291C45.8532 41.6874 45.8025 41.6275 45.7719 41.5571C45.7518 41.5102 45.7414 41.4596 45.7414 41.4084C45.7414 41.3573 45.7518 41.3067 45.7719 41.2598C45.7916 41.2141 45.8198 41.1726 45.8551 41.1376C45.8908 41.1023 45.9331 41.0744 45.9796 41.0554C46.0285 41.0352 46.0811 41.0249 46.134 41.0253ZM46.134 41.7074C46.1738 41.7077 46.2132 41.6997 46.2497 41.6839C46.2847 41.6687 46.3166 41.6471 46.3436 41.62C46.3993 41.5638 46.4305 41.4878 46.4305 41.4086C46.4305 41.3295 46.3993 41.2535 46.3436 41.1972C46.3166 41.1703 46.2847 41.1488 46.2497 41.1339C46.2131 41.1183 46.1738 41.1105 46.134 41.1108C46.0936 41.1105 46.0535 41.1184 46.0162 41.1339C45.9805 41.1485 45.9482 41.1701 45.9208 41.1972C45.8651 41.2535 45.8338 41.3294 45.8338 41.4086C45.8338 41.4878 45.8651 41.5638 45.9208 41.62C45.9482 41.6473 45.9806 41.669 46.0162 41.6839C46.0535 41.6997 46.0936 41.7077 46.134 41.7074ZM46.1566 41.2292C46.1943 41.2267 46.2318 41.2375 46.2624 41.2598C46.2745 41.2698 46.2842 41.2825 46.2907 41.297C46.2971 41.3114 46.3001 41.3271 46.2994 41.3429C46.2999 41.3564 46.2974 41.3699 46.2923 41.3824C46.2873 41.3949 46.2796 41.4063 46.2699 41.4156C46.2465 41.4364 46.2169 41.4488 46.1857 41.4509L46.3022 41.5853H46.2111L46.1031 41.4518H46.0683V41.5853H45.9922V41.2292H46.1566ZM46.0683 41.2959V41.3908H46.1557C46.1725 41.3917 46.1892 41.3876 46.2036 41.379C46.2095 41.3751 46.2143 41.3697 46.2174 41.3634C46.2205 41.357 46.2219 41.35 46.2214 41.3429C46.2218 41.336 46.2204 41.3291 46.2173 41.3229C46.2141 41.3167 46.2094 41.3114 46.2036 41.3076C46.1891 41.2992 46.1725 41.2951 46.1557 41.2959H46.0683ZM41.613 39.6559C41.626 39.4283 41.7054 39.2096 41.8413 39.0265C41.9771 38.8435 42.1636 38.7043 42.3777 38.626C42.5917 38.5477 42.824 38.5338 43.0459 38.5859C43.2678 38.6381 43.4696 38.754 43.6264 38.9194C43.7832 39.0849 43.8881 39.2926 43.9283 39.517C43.9684 39.7413 43.942 39.9726 43.8523 40.1821C43.7626 40.3917 43.6136 40.5704 43.4235 40.6962C43.2335 40.8221 43.0108 40.8896 42.7828 40.8903C42.6231 40.8925 42.4646 40.8615 42.3174 40.7994C42.1702 40.7373 42.0374 40.6453 41.9275 40.5293C41.8176 40.4134 41.7329 40.2759 41.6788 40.1255C41.6247 39.9752 41.6023 39.8153 41.613 39.6559ZM13.2779 39.6559V37.7277H12.4388V38.1956C12.2956 38.0111 12.1102 37.8635 11.8983 37.7652C11.6863 37.667 11.4539 37.6209 11.2205 37.6309C10.7006 37.6564 10.2104 37.8809 9.85142 38.2578C9.49246 38.6348 9.29225 39.1354 9.29225 39.656C9.29225 40.1765 9.49246 40.6771 9.85142 41.0541C10.2104 41.4311 10.7006 41.6556 11.2205 41.6811C11.4539 41.691 11.6863 41.645 11.8983 41.5467C12.1102 41.4484 12.2956 41.3008 12.4388 41.1162V41.5843H13.2779V39.6559ZM10.1556 39.6559C10.1686 39.4283 10.2479 39.2096 10.3838 39.0265C10.5197 38.8435 10.7062 38.7043 10.9202 38.626C11.1343 38.5477 11.3666 38.5338 11.5885 38.5859C11.8104 38.6381 12.0122 38.754 12.1689 38.9194C12.3257 39.0849 12.4307 39.2926 12.4708 39.517C12.511 39.7414 12.4846 39.9726 12.3949 40.1821C12.3052 40.3917 12.1561 40.5704 11.9661 40.6962C11.776 40.8221 11.5533 40.8896 11.3254 40.8903C11.1656 40.8925 11.0071 40.8615 10.8599 40.7994C10.7127 40.7373 10.58 40.6453 10.4701 40.5293C10.3602 40.4134 10.2755 40.2759 10.2214 40.1255C10.1672 39.9752 10.1448 39.8153 10.1556 39.6559Z" fill="#F5F5F5"/>
+<path d="M29.8549 8.33698H17.146V31.1754H29.8549V8.33698Z" fill="#FF5F00"/>
+<path d="M17.9528 19.757C17.9508 17.5575 18.4492 15.3863 19.4103 13.4079C20.3714 11.4295 21.77 9.69573 23.5003 8.33777C21.3576 6.65359 18.7843 5.60622 16.0746 5.31537C13.3648 5.02453 10.6278 5.50195 8.17657 6.69307C5.7253 7.88418 3.65859 9.74093 2.21268 12.0511C0.766777 14.3613 0 17.0316 0 19.757C0 22.4823 0.766777 25.1527 2.21268 27.4628C3.65859 29.773 5.7253 31.6297 8.17657 32.8209C10.6278 34.012 13.3648 34.4894 16.0746 34.1986C18.7843 33.9077 21.3576 32.8603 23.5003 31.1762C21.7701 29.8182 20.3714 28.0844 19.4103 26.106C18.4492 24.1276 17.9508 21.9565 17.9528 19.757Z" fill="#EB001B"/>
+<path d="M47 19.757C47.0001 22.4823 46.2334 25.1526 44.7876 27.4628C43.3418 29.7729 41.2751 31.6297 38.8239 32.8208C36.3727 34.012 33.6358 34.4894 30.9261 34.1986C28.2163 33.9077 25.6431 32.8603 23.5005 31.1762C25.2292 29.8168 26.6267 28.0827 27.5877 26.1046C28.5486 24.1266 29.0479 21.9561 29.0479 19.757C29.0479 17.5578 28.5486 15.3874 27.5877 13.4093C26.6267 11.4312 25.2292 9.6971 23.5005 8.33777C25.6431 6.65358 28.2163 5.60621 30.9261 5.31537C33.6358 5.02453 36.3727 5.50196 38.8239 6.69309C41.2751 7.88422 43.3418 9.74098 44.7876 12.0511C46.2334 14.3613 47.0001 17.0317 47 19.757Z" fill="#F79E1B"/>
+<path d="M45.6143 28.7567V28.2892H45.8029V28.1939H45.3227V28.2892H45.5113V28.7567H45.6143ZM46.5465 28.7567V28.193H46.3994L46.2301 28.5808L46.0607 28.193H45.9135V28.7567H46.0174V28.3315L46.1762 28.6981H46.2839L46.4427 28.3306V28.7567H46.5465Z" fill="#F79E1B"/>
+</svg>
+
+================
+File: src/assets/react.svg
+================
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+
+================
+File: src/components/ChartComponent.js
+================
+// Add buttons for switching between chart views
+<div>
+  <button onClick={showMonthlyChart}>Monthly View</button>
+  <button onClick={showDailyChart}>Daily Expenses View</button>
+</div>
+
+// Define functions to handle button clicks
+const showMonthlyChart = () => {
+  // Logic to display the monthly chart
+};
+
+const showDailyChart = () => {
+  // Logic to display the daily expenses chart
+};
+
+// Ensure the chart rendering logic can switch between datasets
+const renderChart = (data) => {
+  // Logic to render chart based on the provided data
+};
+
+================
+File: src/components/Container/index.tsx
+================
+import { ReactNode } from 'react';
+import { StyledContainer } from './style';
+import { useGlobalContext } from '../../hooks/useGlobalContext';
+
+interface iChildren {
+  children: ReactNode;
+}
+const Container = ({ children }: iChildren) => {
+  const { sidebarIsOpen } = useGlobalContext();
+
+  return (
+    <StyledContainer sidebarIsOpen={sidebarIsOpen}>{children}</StyledContainer>
+  );
+};
+
+export default Container;
+
+================
+File: src/components/Container/style.ts
+================
+'use client';
+import styled from 'styled-components';
+import { breakpoints } from '../../constants/breakpoints';
+
+interface iStyledContainerProps {
+  sidebarIsOpen: boolean;
+}
+export const StyledContainer = styled.div<iStyledContainerProps>`
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  column-gap: 2rem;
+  padding: 0 1rem 0 0;
+  /* padding-right: 2rem; */
+  transition: all 0.4s;
+  grid-template-columns: ${({ sidebarIsOpen }) =>
+      sidebarIsOpen ? `${280}px` : `${100}px`} 1fr 392px;
+  grid-template-rows: 120px 1fr;
+  grid-template-areas:
+    'sidebar header header'
+    'sidebar main navigation';
+
+  header {
+    grid-area: header;
+  }
+
+  aside {
+    grid-area: sidebar;
+  }
+
+  main {
+    grid-area: main;
+  }
+
+  .navigation {
+    grid-area: navigation;
+    background-color: ${({theme}) => theme.colors.componentBackground};
+  }
+
+  @media ${breakpoints.md} {
+
+    padding: 0 1rem;
+
+    grid-template-rows: 100px 1fr;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'header'
+      'main'
+      'navigation';
+  }
+`;
+
+================
+File: src/components/Layout/Header/components/OpenSidebarButton.tsx
+================
+import { AiOutlineClose } from 'react-icons/ai';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useGlobalContext } from '../../../../hooks/useGlobalContext';
+
+const OpenSidebarButton = ({size = 32} ) => {
+  const { sidebarIsOpen, handleOpenSidebar } = useGlobalContext();
+
+  return (
+    <div className="menu-icon" title='Open/close sidebar button'>
+      {sidebarIsOpen ? (
+        <AiOutlineClose size={size} onClick={handleOpenSidebar} />
+      ) : (
+        <GiHamburgerMenu size={size} onClick={handleOpenSidebar} />
+      )}
+    </div>
+  );
+};
+
+export default OpenSidebarButton;
+
+================
+File: src/components/Layout/Header/index.tsx
+================
+import { BiSearch, BiSun, BiMoon } from 'react-icons/bi';
+import { MdNotificationsNone } from 'react-icons/md';
+import { StyledHeader } from './style';
+import React, { Dispatch } from 'react';
+import OpenSidebarButton from './components/OpenSidebarButton';
+
+interface iHeader {
+  isLightTheme: boolean;
+  setIsLightTheme: Dispatch<React.SetStateAction<boolean>>;
+}
+const Header = ({ isLightTheme, setIsLightTheme }: iHeader) => {
+  return (
+    <StyledHeader>
+      <div className="header-left">
+        <OpenSidebarButton />
+
+        <div className="input-wrapper">
+          <label htmlFor="search">
+            <BiSearch size={20} />
+          </label>
+          <input id="search" type="text" placeholder="Search" />
+        </div>
+      </div>
+
+      <div className="header-right">
+        <button title='Change theme'>
+          {isLightTheme ? (
+            <BiMoon size={24} onClick={() => setIsLightTheme(!isLightTheme)} />
+          ) : (
+            <BiSun size={24} onClick={() => setIsLightTheme(!isLightTheme)} />
+          )}
+        </button>
+        <div className="notification">
+          <button title='Notifications'>
+            <MdNotificationsNone size={24} />
+          </button>
+          <span></span>
+        </div>
+
+        <div className="profile-wrapper">
+          <div className="img-wrapper">
+            <img src="./user-1.png" width={48} alt="Imagem do usuário logado" />
+            <span></span>
+          </div>
+          <div className="info-wrapper">
+            <span className="name">Jane Cooper</span>
+            <span className="username">@cooperuser</span>
+          </div>
+        </div>
+      </div>
+    </StyledHeader>
+  );
+};
+
+export default Header;
+
+================
+File: src/components/Layout/Header/style.ts
+================
+'use client';
+import styled from 'styled-components';
+import { breakpoints } from '../../../constants/breakpoints';
+
+export const StyledHeader = styled.header`
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3;
+  /* padding-left: 2rem; */
+
+  .input-wrapper {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    background-color: ${({theme}) => theme.colors.background};
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+    border: 1px solid ${({theme}) => theme.colors.border};
+    transition: border 0.4s;
+
+    &:focus-within {
+      border: 1px solid ${({theme}) => theme.colors.primary};
+    }
+
+    input {
+      background: transparent;
+      width: 100%;
+      height: 100%;
+      color: ${({theme}) => theme.colors.white};
+      border: 0;
+    }
+
+    label {
+      line-height: 0;
+    }
+
+    svg {
+      color: ${({theme}) => theme.colors.gray};
+    }
+  }
+
+  .profile-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .img-wrapper {
+    border-radius: 50%;
+    position: relative;
+    img {
+      border-radius: 50%;
+    }
+
+    span {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 8px;
+      right: 0;
+      background-color: ${({theme}) => theme.colors.success};
+    }
+  }
+
+  .header-left {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    width: 50vh;
+
+    .menu-icon {
+      cursor: pointer;
+
+      svg {
+        color: #494949;
+        &:hover {
+          color: ${({theme}) => theme.colors.primary};
+        }
+      }
+    }
+
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    button {
+      background: transparent;
+      color: ${({theme}) => theme.colors.gray};
+      transition: all 0.4s;
+
+      &:hover {
+        color: ${({theme}) => theme.colors.primary};
+        transform: translateY(-2px);
+      }
+    }
+
+    .notification {
+      position: relative;
+
+      span {
+        width: 10px;
+        height: 10px;
+
+        display: inline-block;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        right: -2px;
+        background-color: ${({theme}) => theme.colors.danger};
+      }
+    }
+  }
+
+  .info-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    span:nth-of-type(2) {
+      color: ${({theme}) => theme.colors.gray};
+    }
+  }
+
+  @media ${breakpoints.md} {
+    gap: 0.5rem;
+    width: 100vw;
+    /* padding: 0 2rem; */
+
+
+    .input-wrapper {
+      order: 3;
+    }
+
+    .input-wrapper {
+      display: none;
+    }
+  }
+`;
+
+================
+File: src/components/Layout/Sidebar/index.tsx
+================
+import { Link } from 'react-router-dom';
+import Logo from '../../../../public/logo.svg';
+import { StyledAside } from './style';
+import OpenSidebarButton from '../Header/components/OpenSidebarButton';
+import { dataMenu } from '../../../mock/menu';
+import { createSidebarMenu } from '../../../utils/createSidebarMenu';
+import { useGlobalContext } from '../../../hooks/useGlobalContext';
+
+const Sidebar = () => {
+  const { sidebarIsOpen, handleOpenSidebar } = useGlobalContext();
+
+  return (
+    <StyledAside sidebarIsOpen={sidebarIsOpen} data-sidebar-is-open={sidebarIsOpen}>
+
+      {
+        sidebarIsOpen && <span className='close-menu-icon'> <OpenSidebarButton size={24}  /> </span>
+      }
+
+      <img
+        src={Logo}
+        width={54}
+        height={54}
+        className="logo"
+        alt="Logomarca da empresa"
+      />
+
+      <nav>
+        <ul>
+          {dataMenu.map((item) => {          
+            return (
+              <li key={item.id} onClick={handleOpenSidebar}>
+                <Link to={`/${item.href}`}>
+                  {createSidebarMenu(item.label)}
+                  {sidebarIsOpen ? item.label: null}
+                </Link>
+              </li>
+            )
+          } )}
+        </ul>
+      </nav>
+    </StyledAside>
+  );
+};
+
+export default Sidebar;
+
+================
+File: src/components/Layout/Sidebar/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../../constants/breakpoints';
+
+interface iStyledAsideProps {
+  sidebarIsOpen: boolean;
+}
+
+export const StyledAside = styled.aside<iStyledAsideProps>`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  z-index: 99;
+  position: relative;
+  background-color: ${({ theme }) => theme.colors.componentBackground};
+
+  .show {
+    transform: translateY(0);
+  }
+
+  .logo {
+    margin-top: 2rem;
+    cursor: pointer;
+  }
+
+  nav {
+    padding-top: 6rem;
+    width: 100%;
+    height: 100%;
+    /* display: flex; */
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+    }
+
+    li {
+      height: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.4s;
+      position: relative;
+
+      a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: ${({ theme }) => theme.colors.white};
+        padding-left: ${({ sidebarIsOpen }) => (sidebarIsOpen ? 5 : 2.2)}rem;
+      }
+
+      &:hover::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 4px;
+        background-color: ${({ theme }) => theme.colors.primary};
+        border-radius: 0 4px 4px 0;
+      }
+
+      &:last-of-type {
+        margin-top: auto;
+        margin-bottom: 4rem;
+      }
+    }
+  }
+
+  .close-menu-icon {
+    display: none;
+  }
+
+  @media ${breakpoints.md} {
+    background-color: ${({ theme }) => theme.colors.black};
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+    position: fixed;
+    inset: 0;
+
+    nav li:hover::after {
+      background-color: initial;
+    }
+
+    &[data-sidebar-is-open='true'] {
+      transform: translateX(0);
+
+      .close-menu-icon {
+        display: inline-block;
+        position: absolute;
+        right: 1.5rem;
+        top: 0.5rem;
+        padding: 2rem;
+        cursor: pointer;
+        color: ${({ theme }) => theme.colors.gray};
+      }
+
+      nav {
+        padding-top: 4rem;
+        justify-content: center;
+
+        ul {
+          padding-left: 40vw;
+        }
+
+        a {
+          padding-left: 0;
+        }
+      }
+    }
+
+    nav li:last-of-type {
+      margin-top: initial;
+    }
+  }
+`;
+
+================
+File: src/components/Layout/Skeleton/components/SkeletonCard.tsx
+================
+import Skeleton from '..';
+import { StyledSkeletonWrapper } from '../style';
+
+interface iSkeletonCard {
+  width: string;
+  height: string;
+}
+
+const SkeletonCard = ({ width, height }: iSkeletonCard) => {
+  return (
+    <StyledSkeletonWrapper minWidth={width} height={height}
+    >
+      <div
+        className="flex"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Skeleton classes="title width-100" />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
+        <Skeleton classes="text width-100" />
+        <Skeleton classes="text width-100" />
+      </div>
+    </StyledSkeletonWrapper>
+  );
+};
+
+export default SkeletonCard;
+
+================
+File: src/components/Layout/Skeleton/components/SkeletonCharts/index.tsx
+================
+import Skeleton from '../..';
+import { StyledSkeletonWrapper } from '../../style';
+
+interface iSkeletonCharts {
+  type?: 'text' | 'circle';
+}
+
+const SkeletonCharts = ({ type = 'text' }: iSkeletonCharts) => {
+  return (
+    <StyledSkeletonWrapper
+      className={type === 'text' ? 'textChart' : 'circleChart'}
+    >
+      {type === 'text' ? (
+        <>
+          <div
+            className="flex"
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <Skeleton classes="title width-100" />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              rowGap: '1rem',
+            }}
+          >
+            <Skeleton classes="text width-100" />
+            <Skeleton classes="text width-50" />
+            <Skeleton classes="text width-100" />
+            <Skeleton classes="text width-50" />
+          </div>
+        </>
+      ) : (
+        <div
+          className="flex"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Skeleton classes="title width-100" />
+          <Skeleton classes="circle width-100" />
+        </div>
+      )}
+    </StyledSkeletonWrapper>
+  );
+};
+
+export default SkeletonCharts;
+
+================
+File: src/components/Layout/Skeleton/index.tsx
+================
+import { StyledSkeleton } from "./style"
+
+const Skeleton = ({classes}: {classes: string}) => {
+  const classNames = `${classes} animate-pulse`
+  return <StyledSkeleton className={classNames}></StyledSkeleton>
+}
+
+export default Skeleton
+
+================
+File: src/components/Layout/Skeleton/SkeletonNavigation.tsx
+================
+import Skeleton from '.';
+import { StyledSkeletonWrapper } from './style';
+
+interface iSkeletonCard {
+  width: string;
+  height: string;
+}
+
+const SkeletonNavigation = ({ width, height }: iSkeletonCard) => {
+  return (
+    <StyledSkeletonWrapper minWidth={width} height={height}>
+      <div
+        className="flex"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '100%'
+        }}
+      >
+        <Skeleton classes="title width-100" />
+        <Skeleton classes="text width-100" />
+        <Skeleton classes="text width-100" />
+        <Skeleton classes="text width-100" />
+        <Skeleton classes="text width-100" />
+        <Skeleton classes="text width-100" />
+      </div>
+    </StyledSkeletonWrapper>
+  );
+};
+
+export default SkeletonNavigation;
+
+================
+File: src/components/Layout/Skeleton/style.ts
+================
+import styled from 'styled-components';
+import { ReactNode } from 'react';
+import { breakpoints } from '../../../constants/breakpoints';
+
+export const StyledSkeleton = styled.div`
+  background-color: #444;
+  border-radius: 8px;
+  position: relative;
+
+  &.title {
+    height: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  &.text {
+    height: 0.75rem;
+  }
+
+  &.width-20 {
+    width: 20%;
+  }
+
+  &.width-50 {
+    width: 50%;
+  }
+
+  &.width-100 {
+    width: 100%;
+  }
+
+  &.circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+
+  &.profile-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: linear-gradient(90deg, #222, #444, #222);
+    background-size: 200%;
+    animation: pulse 1s infinite linear;
+    border-radius: 16px;
+  }
+
+  &.circle::before {
+    border-radius: 50%;
+  }
+
+  @keyframes pulse {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+`;
+
+interface iSkeletonWrapperProps {
+  minWidth?: string;
+  height?: string;
+  children: ReactNode;
+}
+
+export const StyledSkeletonWrapper = styled.div<iSkeletonWrapperProps>`
+  min-width: ${({ minWidth }) => minWidth};
+  height: ${({ height }) => height};
+  background-color: #181818;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 1rem 0;
+
+  &.circleChart {
+    min-width: 50%;
+  }
+
+  @media ${breakpoints.md} {
+    &.circleChart {
+      min-width: 100% !important;
+    }
+  }
+`;
+
+================
+File: src/components/Modal/index.tsx
+================
+import { ReactNode } from "react";
+import { StyledModal } from "./style";
+import {MdClose} from 'react-icons/md'
+import { useTheme } from "styled-components";
+
+interface iModal {
+  isOpen: boolean
+  children: ReactNode
+  closeModal: () => void
+}
+
+const Modal = ({isOpen, children, closeModal}: iModal) => {
+  const theme = useTheme()
+    
+  if (isOpen) {
+
+    return (
+      <StyledModal isDarkTheme={theme.type === 'dark'}>
+        <div onClick={closeModal} className="background" >
+          <div onClick={(e) => e.stopPropagation()} className="content">
+          <div className="header">
+            <button onClick={closeModal}>{<MdClose size={24} />}</button>
+          </div>
+            {children}
+          </div>
+        </div>
+      </StyledModal>
+    );
+  }
+};
+
+export default Modal;
+
+================
+File: src/components/Modal/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../constants/breakpoints';
+
+interface iStyledModal {
+  isDarkTheme: boolean;
+}
+
+export const StyledModal = styled.div<iStyledModal>`
+  .background {
+    position: fixed;
+    inset: 0 0 0 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+  }
+
+  .content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+    border-radius: 16px;
+    background-color: ${({ theme }) => theme.colors.black};
+    border: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  .header {
+    width: 100%;
+    height: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1rem 0;
+  }
+
+  .header button {
+    position: initial;
+    background: transparent;
+    color: ${({ theme }) => theme.colors.white};
+    padding: 1rem;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+
+  form {
+    width: 500px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .input-wrapper {
+      width: 100%;
+
+      input {
+        width: 100%;
+      }
+    }
+
+    input,
+    select {
+      padding: 0.7rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid ${({ theme }) => theme.colors.border};
+      &::placeholder {
+        color: ${({ theme }) => theme.colors.gray};
+      }
+    }
+
+    select {
+      color: #FFF;
+    }
+
+    input {
+      color: ${({ theme }) => theme.colors.white};
+    }
+
+    ::-webkit-calendar-picker-indicator {
+      filter: ${({ isDarkTheme }) => (isDarkTheme ? 'invert(1)' : 'initial')};
+    }
+
+    option {
+      background-color: #222;
+      padding: 0.5rem 0;
+      height: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.7rem 2rem;
+      font-weight: 500;
+      color: #FFF;
+      background-color: ${({ theme }) => theme.colors.primary};
+      border-radius: 8px;
+      font-size: 1rem;
+      position: initial;
+      transition: all 0.4s;
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  @media ${breakpoints.sm} {
+    .content {
+      width: 90%;
+    }
+    form {
+      width: 100%;
+    }
+  }
+`;
+
+================
+File: src/components/MyCards/index.tsx
+================
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlinePlus,
+} from 'react-icons/ai';
+import { MdKeyboardArrowRight } from 'react-icons/md';
+import { StyledCards } from './style';
+import { useEffect, useState } from 'react';
+import Card from '../../pages/dashboard/components/Card';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
+
+const MyCards = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { getCards, cards, handleShowModal } = useDashboardContext();
+
+  useEffect(() => {
+    getCards();
+  }, []);
+
+  return (
+    <StyledCards>
+      <div className="my-cards-header">
+        <div>
+          <div className="title-wrapper">
+            <h3>My cards</h3>
+            {cards.length > 0 ? (
+              cards.length === 1 ? (
+                <span>
+                  {cards.length} card registered
+                  <MdKeyboardArrowRight className="arrow" size={16} />
+                </span>
+              ) : (
+                <span>
+                  {cards.length} cards registered
+                  <MdKeyboardArrowRight className="arrow" size={16} />
+                </span>
+              )
+            ) : (
+              <span>No cards registered</span>
+            )}
+          </div>
+          <button
+            className="btn-show-password"
+            onClick={() => setShowPassword(!showPassword)}
+            title='Show/hide credit card information'
+          >
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={24} />
+            ) : (
+              <AiOutlineEye size={24} />
+            )}
+          </button>
+        </div>
+        {cards.length >= 4 && (
+          <button className="btn-new-card" onClick={handleShowModal}>
+            <AiOutlinePlus size={16} />
+            New card
+          </button>
+        )}
+      </div>
+
+      <Card showPassword={showPassword} />
+    </StyledCards>
+  );
+};
+
+export default MyCards;
+
+================
+File: src/components/MyCards/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../constants/breakpoints';
+
+export const StyledCards = styled.div`
+  h3 {
+    font-size: 1.25rem;
+    padding: 1.5rem 0 0;
+  }
+
+  .my-cards-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .my-cards-header div {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    position: relative;
+  }
+
+  .my-cards-header .btn-new-card {
+    background: ${({ theme }) => theme.colors.componentBackground};
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    color: ${({ theme }) => theme.colors.white};
+    align-self: center;
+    gap: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .my-cards-header .btn-new-card:hover {
+    outline: 1px solid ${({ theme }) => theme.colors.primary};
+  }
+
+  .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .title-wrapper span {
+    font-size: 0.875rem;
+    display: flex;
+    color: ${({ theme }) => theme.colors.gray};
+  }
+
+  @keyframes moveRight1 {
+    0% {
+      transform: translateX(0) scaleX(0.2);
+      opacity: 0.2;
+    }
+    50% {
+      transform: translateX(50%) scaleX(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%) scaleX(0.2);
+      opacity: 0.2;
+    }
+  }
+
+  .arrow {
+    animation: moveRight1 3s infinite;
+  }
+
+  button.btn-show-password {
+    background: transparent;
+    color: ${({ theme }) => theme.colors.gray};
+    transition: all 0.4s;
+    padding: 1rem;
+    padding-bottom: 0.8rem;
+    position: absolute;
+    left: 7rem;
+    bottom: 41px;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+      transform: translateY(-2px);
+    }
+  }
+
+  @media ${breakpoints.md} {
+    width: 100%;
+  }
+`;
+
+export const StyledCardList = styled.div`
+  width: 300px;
+  min-width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: scroll;
+  justify-content: flex-start;
+  padding: 1rem 0 0.5rem;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.border};
+  }
+
+  @media ${breakpoints.md} {
+    padding: 0.1rem 0 0.5rem 0.1rem;
+  }
+
+  @media ${breakpoints.sm} {
+  }
+`;
+
+================
+File: src/constants/breakpoints.ts
+================
+const sizes = {
+  sm: '640px',
+  md: '1024px',
+  lg: '1400px',
+}
+
+export const breakpoints = {
+  sm: `(max-width: ${sizes.sm})`, 
+  md: `(max-width: ${sizes.md})`, 
+  lg: `(max-width: ${sizes.lg})`, 
+}
+
+================
+File: src/contexts/DashboardContext.tsx
+================
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import { api } from '../services/api';
+import { iDataCard } from '../types/Cards';
+
+interface Transaction {
+  id: string;
+  postedDate: string;
+  date: string;
+  transactionDate: string;
+  type: string;
+  description: string;
+  amount: number;
+  isDebit: boolean;
+  category: string;
+  cardId: string;
+}
+
+interface BalanceHistoryItem {
+  date: string;
+  balance: string;
+}
+
+interface MonthlySpending {
+  [month: string]: {
+    [category: string]: number;
+  };
+}
+
+interface iDashboardContext {
+  cards: iDataCard[];
+  transactions: Transaction[];
+  balanceHistory: BalanceHistoryItem[];
+  monthlySpending: MonthlySpending;
+  recentActivity: Transaction[];
+  loading: boolean;
+  getCards: () => void;
+  createCard: (data: iDataCard) => void;
+  handleShowModal: () => void;
+  isOpen: boolean;
+}
+
+export const DashboardContext = createContext({} as iDashboardContext);
+
+export const DashboardContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [cards, setCards] = useState<iDataCard[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryItem[]>([]);
+  const [monthlySpending, setMonthlySpending] = useState<MonthlySpending>({});
+  const [recentActivity, setRecentActivity] = useState<Transaction[]>([]);
+
+  const handleShowModal = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const getCards = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch cards from API
+      const cardsRes = await api.get('cards');
+      setCards(cardsRes.data);
+      
+      // Fetch transactions from API
+      const transactionsRes = await api.get('transactions');
+      setTransactions(transactionsRes.data);
+      
+      // Fetch balance history from API
+      const balanceHistoryRes = await api.get('balanceHistory');
+      setBalanceHistory(balanceHistoryRes.data);
+      
+      // Fetch monthly spending from API
+      const monthlySpendingRes = await api.get('monthlySpending');
+      setMonthlySpending(monthlySpendingRes.data);
+      
+      // Fetch recent activity from API
+      const recentActivityRes = await api.get('recentActivity');
+      setRecentActivity(recentActivityRes.data);
+      
+    } catch (error) {
+      console.error('Error while fetching data:', error);
+      
+      // Fallback to localStorage for cards if API fails
+      try {
+        const storagedCards = JSON.parse(localStorage.getItem('cards') || '[]');
+        setCards(storagedCards);
+      } catch (err) {
+        console.error('Error loading from localStorage:', err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createCard = async (data: iDataCard) => {
+    try {
+      setLoading(true);
+      
+      // Send new card to API
+      await api.post('cards', data);
+      
+      // Refresh data
+      getCards();
+    } catch (error) {
+      console.error('Error while creating card:', error);
+      
+      // Fallback to localStorage if API fails
+      try {
+        const updatedCards = [...cards, data];
+        setCards(updatedCards);
+        localStorage.setItem('cards', JSON.stringify(updatedCards));
+      } catch (err) {
+        console.error('Error saving to localStorage:', err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Load data on component mount
+    getCards();
+  }, []);
+
+  return (
+    <DashboardContext.Provider 
+      value={{ 
+        cards, 
+        transactions, 
+        balanceHistory, 
+        monthlySpending, 
+        recentActivity,
+        loading, 
+        getCards, 
+        createCard, 
+        isOpen, 
+        handleShowModal 
+      }}
+    >
+      {children}
+    </DashboardContext.Provider>
+  );
+};
+
+================
+File: src/contexts/GlobalContext.tsx
+================
+import {
+  createContext,
+  useState,
+} from 'react';
+import { iChildren } from '../types/children';
+
+interface iGlobalContext {
+  sidebarIsOpen: boolean;
+  handleOpenSidebar: () => void;
+  isLightTheme: boolean;
+  handleChangeTheme: () => void;
+}
+
+export const GlobalContext = createContext<iGlobalContext>(
+  {} as iGlobalContext
+);
+
+export const GlobalProvider = ({ children }: iChildren) => {
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  const handleChangeTheme = () => {
+    setIsLightTheme(!isLightTheme);
+  };
+
+  const handleOpenSidebar = () => {
+    setSidebarIsOpen(!sidebarIsOpen);
+  };
+
+  return (
+    <GlobalContext.Provider
+      value={{
+        isLightTheme,
+        handleChangeTheme,
+        sidebarIsOpen,
+        handleOpenSidebar,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
+};
+
+================
+File: src/hooks/useDashboardContext.ts
+================
+import { useContext } from "react";
+import { DashboardContext } from "../contexts/DashboardContext";
+
+export const useDashboardContext = () => useContext(DashboardContext);
+
+================
+File: src/hooks/useGlobalContext.ts
+================
+import { useContext } from "react";
+import { GlobalContext } from "../contexts/GlobalContext";
+
+export const useGlobalContext = () => useContext(GlobalContext);
+
+================
+File: src/main.tsx
+================
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+        <App />
+  </React.StrictMode>
+);
+
+================
+File: src/mock/dashboard/index.ts
+================
+import { iDataCard } from "../../types/Cards";
+
+export interface iDataPendingPayments {
+  id: number;
+  name: string;
+  type: string;
+  icon: string;
+  money: number;
+}
+export const dataPendingPayments: iDataPendingPayments[] = [
+  {
+    id: 1,
+    name: 'Laundry Service',
+    type: 'laundry',
+    icon: 'laundryIcon',
+    money: 720,
+  },
+  {
+    id: 2,
+    name: 'Veterinary Expenses',
+    type: 'veterinary',
+    icon: 'veterinaryIcon',
+    money: 300,
+  },
+  {
+    id: 3,
+    name: 'Internet Bill',
+    type: 'internet',
+    icon: 'internetIcon',
+    money: 140,
+  },
+  {
+    id: 4,
+    name: 'Medical Expenses',
+    type: 'medical',
+    icon: 'medicalIcon',
+    money: 170,
+  },
+  {
+    id: 5,
+    name: 'Furniture Cleaning',
+    type: 'furniture',
+    icon: 'furnitureIcon',
+    money: 270,
+  },
+];
+
+interface idDataMyBlance {
+  name: string;
+  income: number;
+  spend: number;
+}
+
+export const dataMyBlance: idDataMyBlance[] = [
+  { name: 'Jan', income: 1000, spend: 3000 },
+  { name: 'Feb', income: 5000, spend: 2500 },
+  { name: 'Mar', income: 2000, spend: 4000 },
+  { name: 'Apr', income: 3500, spend: 1500 },
+  { name: 'May', income: 3000, spend: 3500 },
+  { name: 'Jun', income: 4000, spend: 2000 },
+  { name: 'Jul', income: 2500, spend: 4500 },
+  { name: 'Aug', income: 4500, spend: 1000 },
+  { name: 'Sep', income: 1500, spend: 3500 },
+  { name: 'Oct', income: 3500, spend: 2000 },
+  { name: 'Nov', income: 5000, spend: 3000 },
+  { name: 'Dec', income: 2000, spend: 4000 },
+];
+
+interface iDataMonthlyExpenses {
+  name: string;
+  value: number;
+  fill: string;
+  stroke: string;
+}
+
+export const dataMonthlyExpenses: iDataMonthlyExpenses[] = [
+  {
+    name: 'Food',
+    value: 900,
+    fill: 'rgb(65 255 198 / 34%)',
+    stroke: 'rgb(65, 255, 198)',
+  },
+  {
+    name: 'Internet',
+    value: 700,
+    fill: 'rgb(255 233 54 / 20%)',
+    stroke: 'rgb(255 237 94)',
+  },
+  {
+    name: 'Advertising',
+    value: 500,
+    fill: 'rgb(87 43 173 / 19%)',
+    stroke: 'rgb(160 111 255)',
+  },
+  {
+    name: 'Insurence',
+    value: 200,
+    fill: 'rgb(248 86 64 / 47%)',
+    stroke: 'rgb(255 103 82)',
+  },
+];
+
+
+
+export const dataCard: iDataCard[] = [
+  {
+    id: 1,
+    type: 'Credit',
+    userName: 'Renan Vilela',
+    password: '1715 2154 1471 2114',
+    validate: '2024-05-30T23:47:55.991Z',
+  },
+  {
+    id: 2,
+    type: 'Debit',
+    userName: 'Renan Vilela',
+    password: '2215 1471 2114 3221',
+    validate: '2024-07-24T23:47:55.991Z',
+  },
+];
+
+================
+File: src/mock/menu.ts
+================
+interface iDataMenu {
+  id: number;
+  href: string;
+  label: string;
+  icon: string;
+}
+
+export const dataMenu: iDataMenu[] = [
+  { id: 1, href: '', label: 'dashboard', icon: 'MdSpaceDashboard' },
+  { id: 2, href: 'users', label: 'user', icon: 'BiSolidUser' },
+  {
+    id: 3,
+    href: 'cards',
+    label: 'cards',
+    icon: 'BiSolidCreditCardFront',
+  },
+  { id: 4, href: 'support', label: 'support', icon: 'AiFillPhone' },
+  { id: 5, href: 'settings', label: 'settings', icon: 'IoMdSettings' },
+  { id: 6, href: 'logout', label: 'logout', icon: 'TbLogout' },
+];
+
+================
+File: src/pages/cards/index.tsx
+================
+const CardPage = () => {
+  return (
+    <div>CardPage</div>
+  )
+}
+
+export default CardPage
+
+================
+File: src/pages/dashboard/components/Card/Form.tsx
+================
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { iDataCard } from '../../../../types/Cards';
+import { PatternFormat } from 'react-number-format';
+import { useDashboardContext } from '../../../../hooks/useDashboardContext';
+
+interface iFormNewCard {
+  closeModal: () => void;
+}
+
+const FormNewCard = ({ closeModal }: iFormNewCard) => {
+  const { createCard } = useDashboardContext();
+
+  const schemaErrorMessages = {
+    isRequired: 'Este campo é obrigatório',
+    min5Characters: 'Este campo é obrigatório',
+    onlyNumber: 'Apenas números',
+  };
+
+  const CardSchema = z.object({
+    type: z.string(),
+    userName: z.string(),
+    password: z.string({ required_error: schemaErrorMessages.isRequired }),
+    validate: z
+      .string({ required_error: schemaErrorMessages.isRequired })
+      .min(4, schemaErrorMessages.min5Characters),
+  });
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      type: 'credit',
+      userName: '',
+      password: '',
+      validate: '',
+    },
+    resolver: zodResolver(CardSchema),
+  });
+
+  const handleCreateCard = async (data: iDataCard) => {
+    const newCard: iDataCard = {
+      type: data.type,
+      userName: data.userName,
+      password: data.password,
+      validate: data.validate,
+    };
+    createCard(newCard);
+    closeModal()
+    reset();
+  };
+
+  return (
+    <form onSubmit={handleSubmit(handleCreateCard)}>
+      <div className="form-group">
+        <label htmlFor="cardNumber">Card number</label>
+        <div className="input-wrapper">
+          <PatternFormat
+            format="#### #### #### ####"
+            allowEmptyFormatting
+            mask="_"
+            {...register('password')}
+            onValueChange={(e) => setValue('password', e.value)}
+          />
+          {errors.password && <span>{errors.password.message}</span>}
+        </div>
+      </div>
+      <div className="form-group">
+        <label htmlFor="fullName">Name on card</label>
+        <div className="input-wrapper">
+          <input
+            type="text"
+            placeholder="Enter full name"
+            {...register('userName')}
+          />
+          {errors.userName && <span>{errors.userName.message}</span>}
+        </div>
+      </div>
+      <div className="form-group">
+        <label htmlFor="validate">Expiry Date</label>
+        <div className="input-wrapper">
+          <input
+            type="date"
+            placeholder="Enter validate"
+            {...register('validate')}
+          />
+          {errors.validate && <span>{errors.validate.message}</span>}
+        </div>
+      </div>
+      <div className="form-group">
+        <label htmlFor="type">Card type</label>
+        <select {...register('type')}>
+          <option value="credit">Credit</option>
+          <option value="debit">Debit</option>
+        </select>
+      </div>
+
+      <button disabled={isSubmitting} type="submit">
+        Add card
+      </button>
+    </form>
+  );
+};
+
+export default FormNewCard;
+
+================
+File: src/pages/dashboard/components/Card/index.tsx
+================
+import { StyledCard, StyledEmptyCard } from './style';
+import { PatternFormat } from 'react-number-format';
+import { StyledCardList } from '../../../../components/MyCards/style';
+import { dateFormat } from '../../../../utils/DateFormat';
+import MasterCard from '../../../../assets/images/MasterCard.svg';
+import { iDataCard } from '../../../../types/Cards';
+import FormNewCard from './Form';
+import Modal from '../../../../components/Modal';
+import { useDashboardContext } from '../../../../hooks/useDashboardContext';
+import SkeletonCard from '../../../../components/Layout/Skeleton/components/SkeletonCard';
+
+const Card = ({ showPassword }: { showPassword: boolean }) => {
+  const { cards, isOpen, loading, handleShowModal } = useDashboardContext();
+
+  return (
+    <StyledCardList>
+
+      {loading
+        ? [...Array(2).keys()].map((i, index) => (
+            <SkeletonCard key={index} width="288px" height="179px" />
+          ))
+        : cards &&
+          cards.length > 0 &&
+          cards.map((item: iDataCard) => (
+            <StyledCard key={item.id}>
+              <div className="card-header">
+                <span>{item.type}</span>
+                <img
+                  src={MasterCard}
+                  width={47}
+                  height={47}
+                  alt="Imagem da bandeira do cartão de crédito"
+                />
+              </div>
+
+              <div className="card-footer">
+                <div className="user-info">
+                  <span>{item.userName}</span>
+                  <PatternFormat
+                    type="text"
+                    mask="_"
+                    value={item.password}
+                    displayType="text"
+                    patternChar="#"
+                    format="#### #### #### ####"
+                    renderText={(formattedValue) => {
+                      return (
+                        <span>
+                          {showPassword
+                            ? formattedValue
+                            : '**** **** **** ****'}
+                        </span>
+                      );
+                    }}
+                  ></PatternFormat>
+                </div>
+                <span>
+                  {showPassword ? dateFormat(item.validate) : '**/**'}
+                </span>
+              </div>
+            </StyledCard>
+          ))}
+
+      {cards.length < 4 && !loading && (
+        <StyledEmptyCard onClick={handleShowModal}>+</StyledEmptyCard>
+      )}
+
+      <Modal isOpen={isOpen} closeModal={handleShowModal}>
+        <FormNewCard closeModal={handleShowModal} />
+      </Modal>
+    </StyledCardList>
+  );
+};
+
+export default Card;
+
+================
+File: src/pages/dashboard/components/Card/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../../../constants/breakpoints';
+
+export const StyledCard = styled.div`
+  min-width: 288px;
+  height: 179px;
+  border-radius: 1rem;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  background-color: ${({theme}) => theme.colors.componentBackground};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform ease-in-out 0.4s;
+  border: 1px solid ${({theme}) => theme.colors.border};
+
+  &:hover {
+    border: 1px solid ${({theme}) => theme.colors.primary};
+    transform: translateY(-10px);
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    span:nth-of-type(1) {
+      font-weight: 500;
+    }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+      text-transform: capitalize;
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media ${breakpoints.sm} {
+    &:hover {
+    transform: initial;
+  }
+  }
+
+`;
+
+export const StyledEmptyCard = styled(StyledCard)`
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  padding: 0;
+`;
+
+================
+File: src/pages/dashboard/components/Charts/MonthlyExpenses/index.tsx
+================
+import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { StyledMonthlyExpensesChart } from './style';
+// import { dataMonthlyExpenses } from '../../../../../mock/dashboard';
+import { useDashboardContext } from '../../../../../hooks/useDashboardContext';
+import SkeletonCharts from '../../../../../components/Layout/Skeleton/components/SkeletonCharts';
+import { useMemo } from 'react';
+
+interface CategoryColor {
+  fill: string;
+  stroke: string;
+}
+
+interface CategoryColors {
+  [category: string]: CategoryColor;
+}
+
+interface ExpenseData {
+  name: string;
+  value: number;
+  fill: string;
+  stroke: string;
+}
+
+// Colors for different categories
+const categoryColors: CategoryColors = {
+  'Restaurant': {fill: 'rgb(65 255 198 / 34%)', stroke: 'rgb(65, 255, 198)'},
+  'Shopping': {fill: 'rgb(255 233 54 / 20%)', stroke: 'rgb(255 237 94)'},
+  'Entertainment': {fill: 'rgb(87 43 173 / 19%)', stroke: 'rgb(160 111 255)'},
+  'Fee': {fill: 'rgb(248 86 64 / 47%)', stroke: 'rgb(255 103 82)'},
+  'Transportation': {fill: 'rgb(0 183 255 / 23%)', stroke: 'rgb(0, 183, 255)'},
+  'Utility': {fill: 'rgb(255 122 0 / 19%)', stroke: 'rgb(255, 122, 0)'},
+  'Cryptocurrency': {fill: 'rgb(252 186 3 / 30%)', stroke: 'rgb(252, 186, 3)'},
+  'Coffee Shop': {fill: 'rgb(130 87 34 / 30%)', stroke: 'rgb(130, 87, 34)'},
+  'Housing': {fill: 'rgb(196 43 28 / 30%)', stroke: 'rgb(196, 43, 28)'},
+  'Subscription': {fill: 'rgb(43 145 175 / 30%)', stroke: 'rgb(43, 145, 175)'},
+  'Fuel': {fill: 'rgb(175 43 133 / 30%)', stroke: 'rgb(175, 43, 133)'},
+  'Parking': {fill: 'rgb(112 128 144 / 30%)', stroke: 'rgb(112, 128, 144)'},
+  'Uncategorized': {fill: 'rgb(128 128 128 / 30%)', stroke: 'rgb(128, 128, 128)'}
+};
+
+// Format number with commas
+const formatCurrency = (value: number | string): string => {
+  if (value === null || value === undefined) return '0';
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  return numValue.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+};
+
+const MonthlyExpensesChart = () => {
+  const { loading, monthlySpending, transactions } = useDashboardContext();
+
+  // Calculate monthly expenses by category
+  const expensesData = useMemo(() => {
+    if (!monthlySpending || Object.keys(monthlySpending).length === 0) {
+      // Fallback: Calculate from transactions if monthlySpending is not available
+      if (transactions && transactions.length > 0) {
+        const categoryTotals: Record<string, number> = {};
+        
+        // Only consider expenses (negative amounts)
+        transactions
+          .filter(t => t.amount < 0)
+          .forEach(transaction => {
+            const category = transaction.category || 'Uncategorized';
+            if (!categoryTotals[category]) {
+              categoryTotals[category] = 0;
+            }
+            categoryTotals[category] += Math.abs(transaction.amount);
+          });
+          
+        return Object.entries(categoryTotals)
+          .map(([name, value]) => ({
+            name,
+            value: Math.round(Number(value)),
+            ...(categoryColors[name] || categoryColors['Uncategorized'])
+          }))
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 6); // Show top 6 categories
+      }
+      return [];
+    }
+    
+    // Use the most recent month's data
+    const months = Object.keys(monthlySpending).sort().reverse();
+    if (months.length === 0) return [];
+    
+    const latestMonth = months[0];
+    const categoryData = monthlySpending[latestMonth];
+    
+    return Object.entries(categoryData)
+      .map(([name, value]) => ({
+        name,
+        value: Math.round(Number(value)),
+        ...(categoryColors[name] || categoryColors['Uncategorized'])
+      }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 6); // Show top 6 categories
+  }, [monthlySpending, transactions]);
+
+  const renderLegend = () => {
+    return (
+      <ul>
+        {expensesData.map((entry, index) => (
+          <li key={`item-${index}`}>
+            <div>
+              <span
+                className="legend-icon"
+                style={{ backgroundColor: entry.stroke }}
+              />
+              {` $${formatCurrency(entry.value)}`}
+            </div>
+            <span className="expense-name">{`${entry.name}`}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  return loading ? (
+    <SkeletonCharts type='circle' />
+  ) : (
+    <StyledMonthlyExpensesChart>
+      <h3>Monthly Expenses</h3>
+
+      <div className="chart">
+        <ResponsiveContainer width="99%" height="100%">
+          <PieChart>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'transparent',
+                borderRadius: '8px',
+                border: 0,
+                backdropFilter: 'blur(3px)',
+                textTransform: 'capitalize',
+              }}
+              itemStyle={{
+                color: '#FFF',
+                backgroundColor: '#25253490',
+                border: '1px solid #373755',
+                borderRadius: '8px',
+                padding: '0.5rem 0',
+                textAlign: 'center',
+              }}
+              formatter={(value) => {
+                return [`$${formatCurrency(value as number)}`, null];
+              }}
+            />
+            <Legend layout="radial" height={140} content={renderLegend} />
+            <Pie
+              data={expensesData}
+              dataKey="value"
+              cx="50%"
+              cy="50%"
+              nameKey="name"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </StyledMonthlyExpensesChart>
+  );
+};
+
+export default MonthlyExpensesChart;
+
+================
+File: src/pages/dashboard/components/Charts/MonthlyExpenses/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../../../../constants/breakpoints';
+
+export const StyledMonthlyExpensesChart = styled.div`
+  width: 33.33%;
+  height: 280px;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.componentBackground};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .chart {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: absolute;
+    left: 0;
+    top: 20%;
+    max-width: 190px;
+    z-index: 10;
+  }
+
+  li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+  
+  li div {
+    display: flex;
+    align-items: center;
+    min-width: 95px;
+    font-weight: 500;
+  }
+  
+  li div span:nth-of-type(1) {
+    margin-right: 0.5rem;
+  }
+
+  .expense-name {
+    text-align: left;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95px;
+  }
+
+  .recharts-pie {
+    transform: translateX(110px) translateY(-10px);
+  }
+
+  .legend-icon {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .expense-name {
+    font-size: 0.8rem;
+    color: ${({ theme }) => theme.colors.gray};
+  }
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  @media ${breakpoints.md} {
+    .recharts-responsive-container {
+      position: relative;
+      right: 0;
+    }
+
+    .recharts-pie {
+      transform: translateX(0);
+    }
+
+    .chart {
+      width: 100%;
+    }
+
+    ul {
+      position: static;
+      transform: none;
+      max-width: none;
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    li div {
+      min-width: auto;
+    }
+
+    ul li {
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    width: 100%;
+  }
+`;
+
+================
+File: src/pages/dashboard/components/Charts/MonthlyIncome/index.tsx
+================
+import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { StyledMonthlyIncomeChart } from './style';
+import { useDashboardContext } from '../../../../../hooks/useDashboardContext';
+import SkeletonCharts from '../../../../../components/Layout/Skeleton/components/SkeletonCharts';
+import { useMemo } from 'react';
+
+interface CategoryColor {
+  fill: string;
+  stroke: string;
+}
+
+interface CategoryColors {
+  [category: string]: CategoryColor;
+}
+
+interface IncomeData {
+  name: string;
+  value: number;
+  fill: string;
+  stroke: string;
+}
+
+// Colors for different income categories
+const categoryColors: CategoryColors = {
+  'Income': {fill: 'rgb(65 255 198 / 34%)', stroke: 'rgb(65, 255, 198)'},
+  'Cryptocurrency': {fill: 'rgb(252 186 3 / 30%)', stroke: 'rgb(252, 186, 3)'},
+  'Transfer': {fill: 'rgb(87 43 173 / 19%)', stroke: 'rgb(160 111 255)'},
+  'Professional Services': {fill: 'rgb(0 183 255 / 23%)', stroke: 'rgb(0, 183, 255)'},
+  'Cash Deposit': {fill: 'rgb(248 86 64 / 47%)', stroke: 'rgb(255 103 82)'},
+  'Refund': {fill: 'rgb(255 233 54 / 20%)', stroke: 'rgb(255 237 94)'},
+  'Other': {fill: 'rgb(128 128 128 / 30%)', stroke: 'rgb(128, 128, 128)'}
+};
+
+// Format number with commas
+const formatCurrency = (value: number | string): string => {
+  if (value === null || value === undefined) return '0';
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  return numValue.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+};
+
+const MonthlyIncomeChart = () => {
+  const { loading, monthlySpending, transactions } = useDashboardContext();
+
+  // Calculate monthly income by category
+  const incomeData = useMemo(() => {
+    // Calculate from transactions
+    if (transactions && transactions.length > 0) {
+      const categoryTotals: Record<string, number> = {};
+      
+      // Only consider income (positive amounts)
+      transactions
+        .filter(t => t.amount > 0)
+        .forEach(transaction => {
+          const category = transaction.category || 'Other';
+          if (!categoryTotals[category]) {
+            categoryTotals[category] = 0;
+          }
+          categoryTotals[category] += transaction.amount;
+        });
+        
+      return Object.entries(categoryTotals)
+        .map(([name, value]) => ({
+          name,
+          value: Math.round(Number(value)),
+          ...(categoryColors[name] || categoryColors['Other'])
+        }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 6); // Show top 6 categories
+    }
+    return [];
+  }, [transactions]);
+
+  const renderLegend = () => {
+    return (
+      <ul>
+        {incomeData.map((entry, index) => (
+          <li key={`item-${index}`}>
+            <div>
+              <span
+                className="legend-icon"
+                style={{ backgroundColor: entry.stroke }}
+              />
+              {` $${formatCurrency(entry.value)}`}
+            </div>
+            <span className="expense-name">{`${entry.name}`}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  return loading ? (
+    <SkeletonCharts type='circle' />
+  ) : (
+    <StyledMonthlyIncomeChart>
+      <h3>Monthly Income</h3>
+
+      <div className="chart">
+        <ResponsiveContainer width="99%" height="100%">
+          <PieChart>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'transparent',
+                borderRadius: '8px',
+                border: 0,
+                backdropFilter: 'blur(3px)',
+                textTransform: 'capitalize',
+              }}
+              itemStyle={{
+                color: '#FFF',
+                backgroundColor: '#25253490',
+                border: '1px solid #373755',
+                borderRadius: '8px',
+                padding: '0.5rem 0',
+                textAlign: 'center',
+              }}
+              formatter={(value) => {
+                return [`$${formatCurrency(value as number)}`, null];
+              }}
+            />
+            <Legend layout="radial" height={140} content={renderLegend} />
+            <Pie
+              data={incomeData}
+              dataKey="value"
+              cx="50%"
+              cy="50%"
+              nameKey="name"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </StyledMonthlyIncomeChart>
+  );
+};
+
+export default MonthlyIncomeChart;
+
+================
+File: src/pages/dashboard/components/Charts/MonthlyIncome/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../../../../constants/breakpoints';
+
+export const StyledMonthlyIncomeChart = styled.div`
+  width: 33.33%;
+  height: 280px;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.componentBackground};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .chart {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: absolute;
+    left: 0;
+    top: 20%;
+    max-width: 190px;
+    z-index: 10;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    
+    li div {
+      display: flex;
+      align-items: center;
+      min-width: 95px;
+      font-weight: 500;
+    }
+    
+    li div span:nth-of-type(1) {
+      margin-right: 0.5rem;
+    }
+
+    .expense-name {
+      text-align: left;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 95px;
+    }
+  }
+
+  .recharts-pie {
+    transform: translateX(110px) translateY(-10px);
+  }
+
+  .legend-icon {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .expense-name {
+    font-size: 0.8rem;
+    color: ${({ theme }) => theme.colors.gray};
+  }
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  @media ${breakpoints.md} {
+    .recharts-responsive-container {
+      position: relative;
+      right: 0;
+    }
+
+    .recharts-pie {
+      transform: translateX(0);
+    }
+
+    .chart {
+      width: 100%;
+    }
+
+    ul {
+      position: static;
+      transform: none;
+      max-width: none;
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    li div {
+      min-width: auto;
+    }
+
+    ul li {
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    width: 100%;
+  }
+`;
+
+================
+File: src/pages/dashboard/components/Charts/MyBalance/index.tsx
+================
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { StyledMyBalanceChart } from './style';
+import { useTheme } from 'styled-components';
+import { useDashboardContext } from '../../../../../hooks/useDashboardContext';
+import SkeletonCharts from '../../../../../components/Layout/Skeleton/components/SkeletonCharts';
+import { useMemo, useState } from 'react';
+
+// Helper function for currency formatting
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
+// Categories that should always be counted as income regardless of other factors
+const INCOME_CATEGORIES = ['Income', 'Cryptocurrency'];
+
+const MyBalanceChart = () => {
+  const { loading, transactions } = useDashboardContext();
+  const theme = useTheme();
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  
+  // Calculate data based on whether we're viewing all months or a specific month
+  const chartData = useMemo(() => {
+    if (!transactions || transactions.length === 0) return [];
+    
+    // If no month is selected, show monthly data (12-month view)
+    if (!selectedMonth) {
+      // Group transactions by month and calculate income and spending
+      const monthlyData: Record<string, { name: string, income: number, spend: number, cash: number, year: number }> = {};
+      
+      // Sort transactions by date
+      const sortedTransactions = [...transactions].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      
+      // Process all transactions
+      sortedTransactions.forEach(transaction => {
+        // Extract month and year from the date (e.g., "2024-04-15" -> "Apr 2024")
+        const date = new Date(transaction.date);
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        const monthYear = `${month} ${year}`;
+        
+        // Initialize the month if it doesn't exist
+        if (!monthlyData[monthYear]) {
+          monthlyData[monthYear] = {
+            name: monthYear,
+            income: 0,
+            spend: 0,
+            cash: 0,
+            year: year
+          };
+        }
+        
+        // Add to income or spend based on the transaction amount
+        if (transaction.amount > 0) {
+          monthlyData[monthYear].income += transaction.amount;
+        } else if (transaction.amount < 0) {
+          monthlyData[monthYear].spend += Math.abs(transaction.amount);
+        }
+      });
+      
+      // Convert to array and sort chronologically
+      let monthlyArray = Object.values(monthlyData)
+        .sort((a, b) => {
+          // Sort by year first, then by month
+          const aDate = new Date(`${a.name.split(' ')[0]} 1, ${a.year}`);
+          const bDate = new Date(`${b.name.split(' ')[0]} 1, ${b.year}`);
+          return aDate.getTime() - bDate.getTime();
+        });
+      
+      // Calculate running cash balance
+      let runningCash = 15000; // Start with a baseline amount for dummy data
+      monthlyArray = monthlyArray.map(month => {
+        runningCash = runningCash + month.income - month.spend;
+        return {
+          ...month,
+          cash: runningCash
+        };
+      });
+      
+      return monthlyArray;
+    } 
+    // If a month is selected, show daily data for that month
+    else {
+      // Extract the month and year from the selected month string (e.g. "Apr 2024")
+      const [monthStr, yearStr] = selectedMonth.split(' ');
+      const monthIndex = new Date(`${monthStr} 1, 2000`).getMonth();
+      const year = parseInt(yearStr);
+      
+      // Filter transactions to only include those from the selected month
+      const filteredTransactions = transactions.filter(transaction => {
+        const transDate = new Date(transaction.date);
+        return transDate.getMonth() === monthIndex && transDate.getFullYear() === year;
+      });
+      
+      // Group transactions by day
+      const dailyData: Record<string, { name: string, income: number, spend: number, cash: number, date: Date }> = {};
+      
+      // Sort transactions by date
+      const sortedTransactions = [...filteredTransactions].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      
+      // Process selected month's transactions by day
+      sortedTransactions.forEach(transaction => {
+        const date = new Date(transaction.date);
+        const day = date.getDate();
+        const dateKey = `${monthStr} ${day}`;
+        
+        // Initialize the day if it doesn't exist
+        if (!dailyData[dateKey]) {
+          dailyData[dateKey] = {
+            name: dateKey,
+            income: 0,
+            spend: 0,
+            cash: 0,
+            date: date
+          };
+        }
+        
+        // Add to income or spend based on the transaction amount
+        if (transaction.amount > 0) {
+          dailyData[dateKey].income += transaction.amount;
+        } else if (transaction.amount < 0) {
+          dailyData[dateKey].spend += Math.abs(transaction.amount);
+        }
+      });
+      
+      // Get all days in the month to ensure continuous data
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+      let fullMonthData = [];
+      
+      // Initial cash value for this month (dummy data)
+      let startingCash = 20000 + Math.random() * 5000;
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${monthStr} ${day}`;
+        
+        if (dailyData[dateKey]) {
+          // Update cash with today's transactions
+          startingCash = startingCash + dailyData[dateKey].income - dailyData[dateKey].spend;
+          
+          fullMonthData.push({
+            ...dailyData[dateKey],
+            cash: startingCash
+          });
+        } else {
+          // Add empty data for days with no transactions but maintain cash balance
+          fullMonthData.push({
+            name: dateKey,
+            income: 0,
+            spend: 0,
+            cash: startingCash,
+            date: new Date(year, monthIndex, day)
+          });
+        }
+      }
+      
+      // Sort by day
+      return fullMonthData.sort((a, b) => a.date.getTime() - b.date.getTime());
+    }
+  }, [transactions, selectedMonth]);
+
+  // Get unique months for the buttons
+  const months = useMemo(() => {
+    if (!transactions || transactions.length === 0) return [];
+    const uniqueMonths = new Map<string, string>();
+    
+    transactions.forEach(t => {
+      const date = new Date(t.date);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const year = date.getFullYear();
+      const monthYear = `${month} ${year}`;
+      uniqueMonths.set(monthYear, monthYear);
+    });
+
+    // Convert to array and sort chronologically
+    return Array.from(uniqueMonths.values()).sort((a, b) => {
+      const aDate = new Date(a);
+      const bDate = new Date(b);
+      return aDate.getTime() - bDate.getTime();
+    });
+  }, [transactions]);
+
+  // Filter months to show only the past 12 months
+  const recentMonths = useMemo(() => {
+    if (months.length <= 12) {
+      return months;
+    }
+    // Get the most recent 12 months
+    return months.slice(Math.max(0, months.length - 12));
+  }, [months]);
+
+  const handleMonthClick = (month: string) => {
+    setSelectedMonth(prev => prev === month ? null : month);
+  };
+
+  return loading ? (
+    <SkeletonCharts />
+  ) : (
+    <StyledMyBalanceChart>
+      <div className="header">
+        <div className="month-buttons">
+          <button
+            className={`month-button ${!selectedMonth ? 'active' : ''}`}
+            onClick={() => setSelectedMonth(null)}
+          >
+            All Months
+          </button>
+          {recentMonths.map(month => (
+            <button
+              key={month}
+              className={`month-button ${selectedMonth === month ? 'active' : ''}`}
+              onClick={() => handleMonthClick(month)}
+            >
+              {month}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="chart">
+        <ResponsiveContainer width="99%" height="100%">
+          <AreaChart
+            data={chartData}
+            margin={{
+              bottom: 0,
+            }}
+          >
+            <defs>
+              <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#54E0A5" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="#13231C" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#5D2AC9" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="#1C0A24" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorCash" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#FFB627" stopOpacity={0.9} />
+                <stop offset="95%" stopColor="#332711" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="name"
+              tickLine={false}
+              axisLine={false}
+              padding={{ left: 24 }}
+              // For single month view, limit the number of ticks shown
+              interval={selectedMonth ? 'preserveStartEnd' : 0}
+              tickFormatter={(value) => {
+                if (selectedMonth) {
+                  // For single month view, just show the day
+                  return value.split(' ')[1];
+                }
+                return value;
+              }}
+            />
+            <YAxis 
+              tickLine={false} 
+              axisLine={false} 
+            />
+            <CartesianGrid
+              stroke={theme.colors.border}
+              horizontal={true}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: theme.colors.toolTipBackground,
+                borderRadius: '8px',
+                border: `1px solid ${theme.colors.toolTipBorder}`,
+                backdropFilter: 'blur(3px)',
+                textTransform: 'capitalize',
+              }}
+              formatter={(value, name) => {
+                if (name === 'cash') {
+                  return [`$${formatCurrency(value as number)}`, 'Cash on Hand'];
+                }
+                if (name === 'income') {
+                  return [`$${formatCurrency(value as number)}`, 'Income'];
+                }
+                if (name === 'spend') {
+                  return [`$${formatCurrency(value as number)}`, 'Spend'];
+                }
+                return [`$${formatCurrency(value as number)}`, null];
+              }}
+              labelFormatter={(label) => {
+                // Show full date in tooltip
+                return selectedMonth ? `${label} (${selectedMonth})` : label;
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="income"
+              stroke={theme.colors.secondary}
+              fillOpacity={1}
+              strokeWidth={2}
+              fill="url(#colorIncome)"
+            />
+            <Area
+              type="monotone"
+              dataKey="spend"
+              stroke={theme.colors.primary}
+              strokeWidth={2}
+              fill="url(#colorSpend)"
+            />
+            <Area
+              type="monotone"
+              dataKey="cash"
+              stroke="#FFCB57"
+              strokeWidth={2}
+              fillOpacity={1}
+              fill="url(#colorCash)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="legends">
+        <span className="income">
+          <span></span>
+          Income
+        </span>
+        <span className="spend">
+          <span></span>
+          Spend
+        </span>
+        <span className="cash">
+          <span></span>
+          Cash on Hand
+        </span>
+      </div>
+    </StyledMyBalanceChart>
+  );
+};
+
+export default MyBalanceChart;
+
+================
+File: src/pages/dashboard/components/Charts/MyBalance/style.ts
+================
+import styled from 'styled-components';
+
+export const StyledMyBalanceChart = styled.div`
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: ${({theme}) => theme.colors.componentBackground};
+  border: 1px solid ${({theme}) => theme.colors.border};
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .month-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    
+    /* Show a subtle scrollbar instead of hiding it */
+    &::-webkit-scrollbar {
+      height: 6px;
+      display: block;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    
+    /* For Firefox and other browsers */
+    -ms-overflow-style: auto;  /* IE and Edge */
+    scrollbar-width: thin;     /* Firefox */
+  }
+
+  .month-button {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 127, 0, 0.4);
+    background: linear-gradient(to bottom, rgba(255, 145, 0, 0.8) 5%, rgba(204, 85, 0, 0.5) 95%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(255, 120, 0, 0.3);
+
+    &:hover {
+      background: linear-gradient(to bottom, rgba(255, 170, 0, 0.9) 5%, rgba(255, 100, 0, 0.7) 95%);
+      border-color: rgba(255, 150, 0, 0.6);
+      box-shadow: 0 1px 5px rgba(255, 120, 0, 0.5);
+    }
+
+    &.active {
+      background: linear-gradient(to bottom, #5D2AC9 5%, #4A1B9E 95%);
+      color: white;
+      border-color: #6E3AD5;
+      box-shadow: 0 1px 8px rgba(93, 42, 201, 0.5);
+    }
+  }
+
+  .legends {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-left: auto;
+    position: relative;
+    right: 0;
+    z-index: 2;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    span span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
+
+  .chart {
+    width: 100%;
+    height: 300px;
+  }
+
+  .income {
+    span {
+      background-color: #54e0a5;
+    }
+  }
+
+  .spend {
+    span {
+      background-color: #5d2ac9;
+    }
+  }
+
+  .cash {
+    span {
+      background-color: #FFCB57;
+    }
+  }
+`;
+
+================
+File: src/pages/dashboard/components/Charts/MySales/index.tsx
+================
+import { useTheme } from 'styled-components';
+import { StyledMySalesChart } from './style';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useDashboardContext } from '../../../../../hooks/useDashboardContext';
+import SkeletonCharts from '../../../../../components/Layout/Skeleton/components/SkeletonCharts';
+
+const MySalesChart = () => {
+  const theme = useTheme();
+  const { loading } = useDashboardContext();
+
+  return loading ? (
+    <SkeletonCharts type='circle' />
+  ) : (
+    <StyledMySalesChart>
+      <h3>Sales</h3>
+      <div className="chart">
+        <CircularProgressbar
+          value={77}
+          text={`${77}%`}
+          styles={buildStyles({
+            rotation: 0.3,
+            pathColor: theme.colors.secondary,
+            textColor: theme.colors.secondary,
+            trailColor: theme.colors.border,
+            backgroundColor: '#41FFC6',
+          })}
+          strokeWidth={15}
+        />
+        <span>More than last week</span>
+      </div>
+    </StyledMySalesChart>
+  );
+};
+
+export default MySalesChart;
+
+================
+File: src/pages/dashboard/components/Charts/MySales/style.ts
+================
+import styled from 'styled-components';
+import { breakpoints } from '../../../../../constants/breakpoints';
+
+export const StyledMySalesChart = styled.div`
+  span {
+    font-size: 0.875rem;
+  }
+  width: 33.33%;
+  height: 280px;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: ${({theme}) => theme.colors.componentBackground};
+  border: 1px solid ${({theme}) => theme.colors.border};
+  display: flex;
+
+  .chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: calc(100% - 110px);
+    height: 100%;
+  }
+
+  @media ${breakpoints.md} {
+    width: 100%;
+  }
+`;
+
+================
+File: src/pages/dashboard/components/Divider/index.tsx
+================
+import { StyledDivider } from './style';
+
+interface iDividerProps {
+  verticalSpace?: number;
+}
+
+const Divider = ({ verticalSpace }: iDividerProps) => {
+  return <StyledDivider verticalSpace={verticalSpace} />;
+};
+
+export default Divider;
+
+================
+File: src/pages/dashboard/components/Divider/style.ts
+================
+import styled from 'styled-components';
+interface iDividerProps {
+  verticalSpace?: number;
+}
+
+export const StyledDivider = styled.div<iDividerProps>`
+  width: 100%;
+  height: 1px;
+  margin: ${({ verticalSpace }) =>
+      verticalSpace ? `${verticalSpace}rem` : '1rem'}
+    0;
+  background-color: ${({theme}) => theme.colors.border};
+`;
+
+================
+File: src/pages/dashboard/components/Navigation/Navigation.tsx
+================
+'use client';
+import { StyledNavigation, StyledPaymentItem } from './style';
+import Divider from '../Divider';
+import furnitureIcon from '../../../../assets/icons/furniture-icon.svg';
+import laundryIcon from '../../../../assets/icons/laundry-icon.svg';
+import internetIcon from '../../../../assets/icons/internet-icon.svg';
+import medicalIcon from '../../../../assets/icons/medical-icon.svg';
+import veterinaryIcon from '../../../../assets/icons/veterinary-icon.svg';
+import { currentFormat } from '../../../../utils/currencyFormat';
+import { dateFormatTimeAgo } from '../../../../utils/DateFormat';
+import {
+  dataPendingPayments,
+  iDataPendingPayments,
+} from '../../../../mock/dashboard';
+import { Link } from 'react-router-dom';
+import { useDashboardContext } from '../../../../hooks/useDashboardContext';
+import SkeletonNavigation from '../../../../components/Layout/Skeleton/SkeletonNavigation';
+
+const getIcon = (type: string) => {
+  switch (type) {
+    case 'laundry':
+      return (
+        <img
+          src={laundryIcon}
+          alt="Ícone da lavanderia"
+          width={24}
+          height={24}
+        />
+      );
+    case 'veterinary':
+      return (
+        <img
+          src={veterinaryIcon}
+          alt="Ícone da Veterinária"
+          width={24}
+          height={24}
+        />
+      );
+    case 'internet':
+      return (
+        <img
+          src={internetIcon}
+          alt="Ícone da Internet"
+          width={24}
+          height={24}
+        />
+      );
+    case 'medical':
+      return (
+        <img src={medicalIcon} alt="Ícone de Medicina" width={24} height={24} />
+      );
+    case 'furniture':
+      return (
+        <img
+          src={furnitureIcon}
+          alt="Ícone da Mobilia"
+          width={24}
+          height={24}
+        />
+      );
+    default:
+      return <img src={''} alt="Ícone da padrao" width={24} height={24} />;
+  }
+};
+
+interface iMockRecentTransactions {
+  id: number;
+  imgUrl: string;
+  userName: string;
+  hour: string;
+  money: number;
+  isPositive: boolean;
+}
+
+const mockRecentTransations: iMockRecentTransactions[] = [
+  {
+    id: 1,
+    imgUrl: './user-2.png',
+    userName: 'Leslie Alexander',
+    hour: '2024-04-20T21:00:59+0000',
+    money: 300,
+    isPositive: true,
+  },
+  {
+    id: 2,
+    imgUrl: './user-3.png',
+    userName: 'Jenny Wilson',
+    hour: '2024-04-20T20:00:59+0000',
+    money: 500,
+    isPositive: false,
+  },
+  {
+    id: 3,
+    imgUrl: './user-4.png',
+    userName: 'Jacob Jones',
+    hour: '2024-04-20T17:00:59+0000',
+    money: 750,
+    isPositive: true,
+  },
+  {
+    id: 4,
+    imgUrl: './user-5.png',
+    userName: 'Jerome Bell',
+    hour: '2024-04-20T10:00:59+0000',
+    money: 1000,
+    isPositive: false,
+  },
+];
+
+const RecentTransactions = () => {
+  return (
+    <div className="recent-transictions">
+      <div className="header">
+        <h3>Recent Transactions</h3>
+        <Link to="#">See all</Link>
+      </div>
+      {mockRecentTransations.map((item: iMockRecentTransactions) => (
+        <div key={item.id}>
+          <div className="user-wrapper">
+            <img src={item.imgUrl} width={48} alt="Imagem do usuário logado" />
+            <div className="user-info">
+              <span className="name">{item.userName}</span>
+              <span className="hour">{dateFormatTimeAgo(item.hour)!}</span>
+            </div>
+            {item.isPositive ? (
+              <span className="money positive">
+                + {currentFormat(item.money)}
+              </span>
+            ) : (
+              <span className="money negative">
+                - {currentFormat(item.money)}
+              </span>
+            )}
+          </div>
+          <Divider />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Navigation = () => {
+  const { loading } = useDashboardContext();
+
+  return loading ? (
+    <SkeletonNavigation width="100%" height="90%" />
+  ) : (
+    <StyledNavigation className="navigation">
+      <div className="pending-payments">
+        <div className="header">
+          <h3>Pending Payments</h3>
+          <Link to="#">See all</Link>
+        </div>
+        <ul className="payment-list">
+          {dataPendingPayments.map((item: iDataPendingPayments) => (
+            <StyledPaymentItem key={item.id} type={item.type}>
+              <div className="icon-wrapper">{getIcon(item.type)}</div>
+              <span>{item.name}</span>
+            </StyledPaymentItem>
+          ))}
+        </ul>
+      </div>
+      <Divider />
+      <RecentTransactions />
+    </StyledNavigation>
+  );
+};
+
+export default Navigation;
+
+================
+File: src/pages/dashboard/components/Navigation/style.ts
+================
+import styled, { css } from 'styled-components';
+import { breakpoints } from '../../../../constants/breakpoints';
+
+export const StyledNavigation = styled.div`
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid ${({theme}) => theme.colors.border};
+  margin-bottom: 3rem;
+
+  h3 {
+    font-size: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  span {
+    font-size: 0.875rem;
+  }
+
+  .money {
+    margin-left: auto;
+    color: ${({theme}) => theme.colors.white};
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      color: ${({theme}) => theme.colors.gray};
+      font-size: 0.875rem;
+      padding-top: 0.4rem;
+
+      &:hover {
+        color: ${({theme}) => theme.colors.primary};
+      }
+    }
+  }
+
+  .payment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .payment-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.4s;
+
+    &:hover {
+      transform: translateX(10px);
+      color: ${({theme}) => theme.colors.primary};
+    }
+
+    .icon-wrapper {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #25d757;
+    }
+  }
+
+  .recent-transictions {
+    .user-wrapper {
+      display: flex;
+      align-items: center;
+      /* cursor: pointer; */
+      gap: 1rem;
+
+      img {
+        border-radius: 50%;
+      }
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+
+      .hour {
+        color: ${({theme}) => theme.colors.gray};
+      }
+    }
+
+    .money {
+      margin-left: auto;
+    }
+
+    .positive {
+      color: ${({theme}) => theme.colors.success};
+    }
+
+    .negative {
+      color: ${({theme}) => theme.colors.danger};
+    }
+  }
+`;
+
+interface iStyledPaymentItem {
+  type: string;
+}
+export const StyledPaymentItem = styled.li<iStyledPaymentItem>`
+  .icon-wrapper {
+    ${({ type }) => {
+      switch (type) {
+        case 'laundry':
+          return css`
+            background-color: #25d75720;
+            color: red;
+          `;
+        case 'veterinary':
+          return css`
+            background-color: #864cff20;
+          `;
+        case 'internet':
+          return css`
+            background-color: #41ffc620;
+          `;
+        case 'medical':
+          return css`
+            background-color: #ff41b320;
+          `;
+        case 'furniture':
+          return css`
+            background-color: #f8564020;
+          `;
+        default:
+          return css`
+            background-color: #222;
+          `;
+      }
+    }};
+  }
+
+  @media ${breakpoints.md} {
+    h3 {
+      font-size: 1rem;
+    }
+    width: 100%;
+    padding: 0;
+  }
+`;
+
+================
+File: src/pages/dashboard/page.tsx
+================
+'use client';
+import Navigation from './components/Navigation/Navigation';
+import { StyledDashboard } from './style';
+import 'react-circular-progressbar/dist/styles.css';
+import MyBalanceChart from './components/Charts/MyBalance';
+import MySalesChart from './components/Charts/MySales';
+import MonthlyExpensesChart from './components/Charts/MonthlyExpenses';
+import MonthlyIncomeChart from './components/Charts/MonthlyIncome';
+import MyCards from '../../components/MyCards';
+
+const Dashboard = () => {
+  return (
+    <>
+      <StyledDashboard>
+        <h2>Overview</h2>
+
+        <MyBalanceChart />
+
+        <div className="footer-charts">
+          <MonthlyExpensesChart />
+          <MonthlyIncomeChart />
+          <MySalesChart />
+        </div>
+        
+        <MyCards />
+      </StyledDashboard>
+
+      <Navigation />
+    </>
+  );
+};
+
+export default Dashboard;
+
+================
+File: src/pages/dashboard/style.ts
+================
+'use client';
+import styled from 'styled-components';
+import { breakpoints } from '../../constants/breakpoints';
+
+export const StyledDashboard = styled.main`
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .footer-charts {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  @media ${breakpoints.md} {
+    h2 {
+      font-size: 1.5rem;
+    }
+    .footer-charts {
+      flex-direction: column;
+    }
+  }
+`;
+
+================
+File: src/pages/pageNotFound/page.tsx
+================
+import { Link } from 'react-router-dom';
+import { StyledNotFound } from './style';
+
+const PageNotFound = () => {
+  return (
+    <StyledNotFound>
+      <h2>Page not found</h2>
+      <Link to="/"> Back to dashboard </Link>
+    </StyledNotFound>
+  );
+};
+
+export default PageNotFound;
+
+================
+File: src/pages/pageNotFound/style.ts
+================
+'use client'
+import styled from 'styled-components';
+
+export const StyledNotFound = styled.div`
+  width: 100%;
+  h2 {
+    color: ${({ theme }) => theme.colors.white};
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  a {
+    color: ${({theme}) => theme.colors.white};
+    padding: 1rem 2rem;
+    background-color: ${({theme}) => theme.colors.primary};
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+`;
+
+================
+File: src/pages/settings/index.tsx
+================
+const SettingsPage = () => {
+  return (
+    <div>SettingsPage</div>
+  )
+}
+
+export default SettingsPage
+
+================
+File: src/pages/support/index.tsx
+================
+const SupportPage = () => {
+  return (
+    <div>SupportPage</div>
+  )
+}
+
+export default SupportPage
+
+================
+File: src/pages/users/index.tsx
+================
+const UsersPage = () => {
+  return (
+    <div>UsersPage</div>
+  )
+}
+
+export default UsersPage
+
+================
+File: src/router.tsx
+================
+import { Route, Routes } from 'react-router-dom';
+import CardPage from './pages/cards';
+import Dashboard from './pages/dashboard/page';
+import SettingsPage from './pages/settings';
+import SupportPage from './pages/support';
+import UsersPage from './pages/users';
+import PageNotFound from './pages/pageNotFound/page';
+
+export const AppRouter = () => {
+  return (
+      <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/cards" element={<CardPage />} />
+          <Route path="/support" element={<SupportPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="*" element={<PageNotFound />} />
+      </Routes>
+  );
+};
+
+================
+File: src/services/api.ts
+================
+import axios from 'axios';
+
+export const api = axios.create({
+  // baseURL: import.meta.env.API_URL,
+  baseURL: 'http://localhost:4000/',
+});
+
+================
+File: src/styles/global.ts
+================
+import { createGlobalStyle } from 'styled-components';
+import { breakpoints } from '../constants/breakpoints';
+
+export const GlobalStyle = createGlobalStyle`
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+}
+
+html {
+  font-family: 'Roboto', sans-serif;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+}
+
+body {
+  background-color: ${({theme}) => theme.colors.background};
+  color: ${({theme}) => theme.colors.white};
+}
+
+h3 {
+  font-weight: 500;
+}
+
+/* main {
+  padding: 0 2rem;
+} */
+
+h3 {
+  font-weight: 600 !important;
+}
+
+@media ${breakpoints.md} {
+  h3 {
+    font-size: 1rem !important;
+    font-weight: 600;
+  }
+}
+
+`;
+
+================
+File: src/styles/theme.ts
+================
+interface iTheme {
+  type: string
+  colors: {
+    primary: string;
+    secondary: string;
+    white: string;
+    black: string;
+    success: string;
+    danger: string;
+    background: string;
+    componentBackground: string;
+    border: string;
+    gray: string;
+    toolTipBackground: string;
+    toolTipBorder: string;
+  };
+}
+
+export const darkTheme: iTheme = {
+  type: 'dark',
+  colors: {
+    primary: '#864CFF',
+    secondary: '#41FFC6',
+    white: '#F5F5F5',
+    black: '#141414',
+    success: '#25D757',
+    danger: '#F85640',
+    background: '#2D1B4E',
+    componentBackground: '#181818',
+    border: '#222222',
+    gray: '#AAAAAA',
+    toolTipBackground: '#25253475',
+    toolTipBorder: '#373755',
+  },
+};
+
+export const lightTheme: iTheme = {
+  type: 'light',
+  colors: {
+    primary: '#864CFF',
+    secondary: '#2CC798',
+    white: '#333',
+    black: '#f7f7fd',
+    success: '#25D757',
+    danger: '#F85640',
+    background: '#FFFFFF',
+    componentBackground: '#F5F5F5',
+    border: '#eee',
+    gray: '#7b7b7b',
+    toolTipBackground: '#eee',
+    toolTipBorder: '#fff',
+  },
+};
+
+================
+File: src/types/Cards.ts
+================
+export interface iDataCard {
+  id?: string | number;
+  type: string;
+  userName: string;
+  password: string;
+  validate: string;
+}
+
+================
+File: src/types/children.ts
+================
+import { ReactNode } from "react";
+
+export interface iChildren {
+  children: ReactNode;
+}
+
+================
+File: src/utils/createSidebarMenu.tsx
+================
+import { MdSpaceDashboard } from 'react-icons/md';
+import { BiSolidCreditCardFront, BiSolidUser } from 'react-icons/bi';
+import { IoMdSettings } from 'react-icons/io';
+import { TbLogout } from 'react-icons/tb';
+import { AiFillPhone } from 'react-icons/ai';
+
+export const createSidebarMenu = (label: string) => {
+  switch (label) {
+    case 'dashboard':
+      return <MdSpaceDashboard size={24} />;
+    case 'user':
+      return <BiSolidUser size={24} />;
+    case 'cards':
+      return <BiSolidCreditCardFront size={24} />;
+    case 'support':
+      return <AiFillPhone size={24} />;
+    case 'settings':
+      return <IoMdSettings size={24} />;
+    case 'logout':
+      return <TbLogout size={24} />;
+  }
+};
+
+================
+File: src/utils/currencyFormat.ts
+================
+export const currentFormat = (money: string | number) => {
+  return Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(Number(money));
+};
+
+================
+File: src/utils/DateFormat.ts
+================
+import { format, formatDistanceToNowStrict } from 'date-fns';
+
+export const dateFormatTimeAgo = (date: Date | string) => {
+  const formatedDate = formatDistanceToNowStrict(date, {
+    addSuffix: true,
+  });
+  return formatedDate;
+};
+
+export const dateFormat = (date: Date | string) => {
+  return format(date, 'MM/yy');
+};
+
+================
+File: src/utils/Providers.tsx
+================
+import { ReactNode, useState } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { darkTheme, lightTheme } from '../styles/theme';
+import { GlobalProvider } from '../contexts/GlobalContext';
+import { DashboardContextProvider } from '../contexts/DashboardContext';
+import Container from '../components/Container';
+import { GlobalStyle } from '../styles/global';
+import { BrowserRouter } from 'react-router-dom';
+import Sidebar from '../components/Layout/Sidebar';
+import Header from '../components/Layout/Header';
+
+const Providers = ({ children }: { children: ReactNode }) => {
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  return (
+    <ThemeProvider theme={isLightTheme ? lightTheme : darkTheme}>
+      <BrowserRouter>
+        <GlobalProvider>
+          <DashboardContextProvider>
+            <Container>
+              <Sidebar />
+              <Header
+                isLightTheme={isLightTheme}
+                setIsLightTheme={setIsLightTheme}
+              />
+              {children}
+            </Container>
+            <GlobalStyle />
+          </DashboardContextProvider>
+        </GlobalProvider>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+};
+
+export default Providers;
+
+================
+File: src/vite-env.d.ts
+================
+/// <reference types="vite/client" />
+
+================
+File: start-back-front.py
+================
+import subprocess
+import os
+import sys
+import time
+import signal
+import webbrowser
+from threading import Timer
+
+# Config
+PROJECT_DIR = r"C:\Users\MIGUEL\Documents\financial-dashboard"
+FRONTEND_URL = "http://localhost:5173"
+BACKEND_URL = "http://localhost:4000"
+
+def print_colored(text, color):
+    """Print colored text to console."""
+    colors = {
+        'red': '\033[91m',
+        'green': '\033[92m',
+        'yellow': '\033[93m',
+        'blue': '\033[94m',
+        'magenta': '\033[95m',
+        'cyan': '\033[96m',
+        'end': '\033[0m'
+    }
+    print(f"{colors.get(color, '')}{text}{colors['end']}")
+
+def run_process(command, name, cwd=PROJECT_DIR):
+    """Run a subprocess with the given command."""
+    print_colored(f"Starting {name}...", "cyan")
+    try:
+        # Shell=True is required for Windows command execution
+        process = subprocess.Popen(
+            command,
+            cwd=cwd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            universal_newlines=True
+        )
+        return process
+    except Exception as e:
+        print_colored(f"Error starting {name}: {str(e)}", "red")
+        return None
+
+def run_process_sync(command, name, cwd=PROJECT_DIR):
+    """Run a subprocess synchronously and wait for completion."""
+    print_colored(f"Running {name}...", "cyan")
+    try:
+        # Shell=True is required for Windows command execution
+        process = subprocess.run(
+            command,
+            cwd=cwd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False  # Don't raise exception on non-zero exit
+        )
+        
+        # Print output
+        if process.stdout:
+            for line in process.stdout.splitlines():
+                print_colored(f"[{name}] {line}", "cyan")
+        
+        # Print errors if any
+        if process.returncode != 0 and process.stderr:
+            for line in process.stderr.splitlines():
+                print_colored(f"[{name} ERROR] {line}", "red")
+            return False
+        
+        return True
+    except Exception as e:
+        print_colored(f"Error running {name}: {str(e)}", "red")
+        return False
+
+def log_output(process, name, color):
+    """Log output from a process with color coding."""
+    for line in iter(process.stdout.readline, ""):
+        if line:
+            print_colored(f"[{name}] {line.strip()}", color)
+    
+    for line in iter(process.stderr.readline, ""):
+        if line:
+            print_colored(f"[{name} ERROR] {line.strip()}", "red")
+
+def open_browser():
+    """Open the browser to the frontend URL."""
+    print_colored(f"Opening {FRONTEND_URL} in your browser...", "green")
+    webbrowser.open(FRONTEND_URL)
+
+def process_csv_data():
+    """Process the CSV data into JSON before starting services."""
+    print_colored("🔄 Checking for CSV data to process...", "yellow")
+    
+    # Check if CSV file exists
+    csv_path = os.path.join(PROJECT_DIR, "public", "combined_truist_statements.csv")
+    if not os.path.exists(csv_path):
+        print_colored(f"⚠️ Warning: CSV file not found: {csv_path}", "yellow")
+        print_colored("💡 The application will still start, but no data will be processed.", "yellow")
+        return True
+    
+    print_colored("✅ CSV file found. Processing data...", "green")
+    
+    # Run the truist-to-json.js script to process the data
+    result = run_process_sync("node truist-to-json.js", "Data Processing")
+    
+    if result:
+        print_colored("✅ Data processing completed successfully!", "green")
+        return True
+    else:
+        print_colored("⚠️ Data processing had issues, but we'll continue starting the application", "yellow")
+        return True
+
+def main():
+    print_colored("Starting Financial Dashboard Application", "green")
+    print_colored(f"Project directory: {PROJECT_DIR}", "blue")
+    
+    # Make sure we're in the right directory
+    if not os.path.exists(os.path.join(PROJECT_DIR, "package.json")):
+        print_colored(f"Error: Could not find package.json in {PROJECT_DIR}", "red")
+        print_colored("Please update the PROJECT_DIR in this script to point to your financial-dashboard project", "red")
+        return
+    
+    # Process CSV data first
+    print_colored("Step 1: Processing CSV data", "blue")
+    process_csv_data()
+    
+    # Start backend
+    print_colored("Step 2: Starting backend server", "blue")
+    backend_process = run_process("npm run dev:back", "Backend")
+    if not backend_process:
+        print_colored("Failed to start backend. Exiting...", "red")
+        return
+    
+    # Wait a bit for backend to initialize
+    time.sleep(3)
+    
+    # Start frontend
+    print_colored("Step 3: Starting frontend server", "blue")
+    frontend_process = run_process("npm run dev", "Frontend")
+    if not frontend_process:
+        print_colored("Failed to start frontend. Shutting down backend...", "red")
+        backend_process.terminate()
+        return
+    
+    # Open browser after a delay to ensure frontend is ready
+    Timer(5, open_browser).start()
+    
+    # Log output from processes
+    try:
+        # Create daemon threads to monitor the output
+        import threading
+        backend_thread = threading.Thread(
+            target=log_output, 
+            args=(backend_process, "Backend", "cyan"),
+            daemon=True
+        )
+        frontend_thread = threading.Thread(
+            target=log_output, 
+            args=(frontend_process, "Frontend", "magenta"),
+            daemon=True
+        )
+        
+        backend_thread.start()
+        frontend_thread.start()
+        
+        print_colored("All services are now running!", "green")
+        print_colored("Press Ctrl+C to stop all services and exit", "yellow")
+        
+        # Keep the main thread alive
+        while True:
+            # Check if processes are still running
+            if backend_process.poll() is not None:
+                print_colored("Backend process has stopped unexpectedly", "red")
+                break
+            if frontend_process.poll() is not None:
+                print_colored("Frontend process has stopped unexpectedly", "red")
+                break
+            time.sleep(1)
+            
+    except KeyboardInterrupt:
+        print_colored("\nShutting down services...", "yellow")
+    finally:
+        # Ensure processes are terminated
+        if backend_process:
+            backend_process.terminate()
+        if frontend_process:
+            frontend_process.terminate()
+        
+        print_colored("All services have been stopped.", "green")
+
+if __name__ == "__main__":
+    # Enable colored output on Windows
+    os.system('color')
+    main()
+
+================
+File: start-with-refresh.js
+================
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+
+console.log('🔄 Starting data refresh process...');
+
+// Check if combined_truist_statements.csv exists
+const csvFilePath = './public/combined_truist_statements.csv';
+if (!fs.existsSync(csvFilePath)) {
+  console.error(`⚠️ Warning: CSV file not found: ${csvFilePath}`);
+  console.log('💡 The application will still start, but no data will be processed.');
+} else {
+  console.log('✅ CSV file found, processing data...');
+}
+
+// Import and run the data processing script
+console.log('🔄 Converting CSV data to JSON...');
+try {
+  // We'll dynamically import and run the conversion script
+  import('./truist-to-json.js')
+    .then(() => {
+      console.log('✅ Data processing completed successfully!');
+      startServers();
+    })
+    .catch(error => {
+      console.error('❌ Error during data processing:', error);
+      console.log('💡 The application will still start with existing data.');
+      startServers();
+    });
+} catch (error) {
+  console.error('❌ Error importing processing script:', error);
+  console.log('💡 The application will still start with existing data.');
+  startServers();
+}
+
+function startServers() {
+  console.log('🚀 Starting servers...');
+
+  // Start the JSON server (backend)
+  const jsonServer = exec('npx json-server db.json -p 4000');
+  jsonServer.stdout.on('data', (data) => {
+    console.log(`Backend: ${data.trim()}`);
+  });
+  jsonServer.stderr.on('data', (data) => {
+    console.error(`Backend Error: ${data.trim()}`);
+  });
+
+  // Give the backend a moment to start up
+  setTimeout(() => {
+    // Start the frontend development server
+    const frontendServer = exec('npx vite');
+    frontendServer.stdout.on('data', (data) => {
+      console.log(`Frontend: ${data.trim()}`);
+    });
+    frontendServer.stderr.on('data', (data) => {
+      console.error(`Frontend Error: ${data.trim()}`);
+    });
+  }, 1000);
+
+  // Handle process termination
+  process.on('SIGINT', () => {
+    console.log('\n🛑 Shutting down servers...');
+    process.exit();
+  });
+}
+
+================
+File: test-data-refresh.js
+================
+import fs from 'fs';
+import path from 'path';
+
+// This script tests the data refresh logic without starting the servers
+console.log('🧪 Testing data refresh functionality...');
+
+// Check if combined_truist_statements.csv exists
+const csvFilePath = './public/combined_truist_statements.csv';
+if (!fs.existsSync(csvFilePath)) {
+  console.error(`⚠️ Warning: CSV file not found: ${csvFilePath}`);
+  console.log('💡 The test cannot continue. Please make sure the CSV file exists in the public directory.');
+  process.exit(1);
+}
+
+console.log('✅ CSV file found:', csvFilePath);
+
+// Check if db.json exists and get its last modified time
+const jsonFilePath = './db.json';
+let dbJsonLastModified = null;
+if (fs.existsSync(jsonFilePath)) {
+  const stats = fs.statSync(jsonFilePath);
+  dbJsonLastModified = stats.mtime;
+  console.log('✅ db.json file found, last modified:', dbJsonLastModified);
+} else {
+  console.log('ℹ️ db.json file does not exist yet, it will be created during processing.');
+}
+
+// Import and run the data processing script
+console.log('🔄 Running conversion script...');
+import('./truist-to-json.js')
+  .then(() => {
+    console.log('✅ Data processing completed successfully!');
+    
+    // Check if db.json was modified
+    if (fs.existsSync(jsonFilePath)) {
+      const newStats = fs.statSync(jsonFilePath);
+      if (!dbJsonLastModified || newStats.mtime > dbJsonLastModified) {
+        console.log('✅ db.json was successfully updated!');
+      } else {
+        console.log('⚠️ db.json was not modified. This might indicate no new data was found or there was an issue.');
+      }
+      
+      // Verify the content structure
+      try {
+        const dbContent = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+        console.log('✅ db.json content verification:');
+        console.log(`  - Cards: ${dbContent.cards ? dbContent.cards.length : 0}`);
+        console.log(`  - Transactions: ${dbContent.transactions ? dbContent.transactions.length : 0}`);
+        console.log(`  - Monthly spending data: ${Object.keys(dbContent.monthlySpending || {}).length} months`);
+        console.log(`  - Balance history points: ${dbContent.balanceHistory ? dbContent.balanceHistory.length : 0}`);
+      } catch (error) {
+        console.error('❌ Error verifying db.json content:', error);
+      }
+    } else {
+      console.error('❌ db.json was not created after processing!');
+    }
+  })
+  .catch(error => {
+    console.error('❌ Error during data processing:', error);
+  });
+
+================
+File: truist-to-json.js
+================
+import fs from 'fs';
+import path from 'path';
+import readline from 'readline';
+
+// Set paths for input and output
+const csvFilePath = './public/combined_truist_statements.csv';
+const jsonOutputPath = './db.json';
+
+async function convertTruistCsvToJson() {
+  try {
+    // Check if CSV file exists
+    if (!fs.existsSync(csvFilePath)) {
+      console.error(`CSV file not found: ${csvFilePath}`);
+      return;
+    }
+
+    const fileStream = fs.createReadStream(csvFilePath);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+    });
+
+    // Read the header line to get column names
+    const headerLine = await new Promise(resolve => {
+      rl.once('line', line => {
+        resolve(line);
+      });
+    });
+
+    const headers = headerLine.split(',').map(header => header.trim());
+    
+    // Create arrays to hold different types of data
+    const transactions = [];
+    const cards = [];
+    let id = 1;
+    let transactionId = 1;
+
+    // Track distinct merchants for categorization
+    const merchants = new Set();
+    const categories = {
+      // Food & Dining
+      'RESTAURANT': 'Dining',
+      'GEPPETTOS': 'Dining',
+      'ROUND TABLE': 'Dining',
+      'EMPANADA': 'Dining',
+      'CHARLIMIKE': 'Dining',
+      'LOBSTER': 'Dining',
+      'PIZZE': 'Dining',
+      'TST*': 'Dining',
+      'DIPPIN': 'Dining',
+      'MCDONALD': 'Dining',
+      'WHATABURGER': 'Dining',
+      'CHICK-FIL-A': 'Dining',
+      'TORCHYS': 'Dining',
+      'JIMMY JOHNS': 'Dining',
+      'PANERA': 'Dining',
+      'CHIPOTLE': 'Dining',
+      'HOPDODDY': 'Dining',
+      'COCO CREPES': 'Dining',
+      'TACO': 'Dining',
+      'WENDYS': 'Dining',
+      'PAPAS': 'Dining',
+      'BURGER': 'Dining',
+      'PIZZA': 'Dining',
+      'SHAKE SHACK': 'Dining',
+      'SALTGRASS': 'Dining',
+      'SANDWICH': 'Dining',
+      'FUZZIWIGS': 'Dining',
+      'BONEFISH': 'Dining',
+      'SUSHI': 'Dining',
+      'PANDA EXPRESS': 'Dining',
+      'WENDY': 'Dining',
+      'SHAKE SHACK': 'Dining',
+      'VILLAGE PIZZE': 'Dining',
+      'FLOWER & CREAM': 'Dining', 
+      'ENO AT THE DEL': 'Dining',
+      'BOARDWALK': 'Dining',
+      'MEALEO': 'Dining',
+      'GRUB': 'Dining',
+      'JERSEY MIKE': 'Dining',
+      'STARBUCKS': 'Coffee',
+      'BONEY': 'Grocery',
+      'SPROUTS': 'Grocery',
+      'H-E-B': 'Grocery',
+      'KROGER': 'Grocery',
+      'TARGET': 'Shopping',
+      'WHOLE FOODS': 'Grocery',
+      'TRADER': 'Grocery',
+      'INSTACART': 'Grocery',
+      'UBER EATS': 'Food Delivery',
+      'GRUBHUB': 'Food Delivery',
+      'DOORDASH': 'Food Delivery',
+      
+      // Transportation
+      'UBER TRIP': 'Transportation',
+      'UBER *TRIP': 'Transportation',
+      'LYFT': 'Transportation',
+      'RIDE': 'Transportation',
+      'PARKING': 'Transportation',
+      'CITYSDPKG': 'Transportation',
+      'LAZ PARKING': 'Transportation',
+      'HOU PARKING': 'Transportation',
+      'COASTER': 'Transportation',
+      'AIRPORT': 'Transportation',
+      'TAXI': 'Transportation',
+      'TRANSIT': 'Transportation',
+      
+      // Fuel
+      'CHEVRON': 'Fuel',
+      'SHELL': 'Fuel',
+      'EXXON': 'Fuel',
+      'FUEL MAXX': 'Fuel',
+      'CIRCLE K': 'Fuel',
+      'VALERO': 'Fuel',
+      'PHILLIPS': 'Fuel',
+      '76 GAS': 'Fuel',
+      'TEXACO': 'Fuel',
+      
+      // Finance
+      'COINBASE': 'Cryptocurrency',
+      'ATM': 'Cash Withdrawal',
+      'WITHDRAWAL': 'Cash Withdrawal',
+      'ISPA/PIMDS': 'ATM Fee',
+      'DEPOSIT': 'Income',
+      'CREDIT': 'Income',
+      'FEE': 'Bank Fee',
+      'TRANSFER': 'Transfer',
+      'ZELLE': 'Transfer',
+      'VENMO': 'Transfer',
+      'PAYPAL': 'Transfer',
+      'ACH': 'Bill Payment',
+      
+      // Utilities & Bills
+      'CPENERGY': 'Utility',
+      'ENTEX': 'Utility',
+      'STREAM ENERGY': 'Utility',
+      'CENTERPOINT': 'Utility',
+      'ELECTRIC': 'Utility',
+      'WATER': 'Utility',
+      'BILL ': 'Bill Payment',
+      'PAYMENT': 'Bill Payment',
+      'PHONE': 'Phone',
+      'INTERNET': 'Internet',
+      'RENT': 'Housing',
+      'MORTGAGE': 'Housing',
+      'BELLAIRE U': 'Utility',
+      'CITY OF': 'Utility',
+      
+      // Shopping
+      'AMAZON': 'Shopping',
+      'WAL-MART': 'Shopping',
+      'WALMART': 'Shopping',
+      'TARGET': 'Shopping',
+      'BEST BUY': 'Shopping',
+      'JCPENNEY': 'Shopping',
+      'COSTCO': 'Shopping',
+      'WALGREENS': 'Pharmacy',
+      'CVS': 'Pharmacy',
+      'GRAINGER': 'Business Supplies',
+      'OFFICE': 'Business Supplies',
+      'STAPLES': 'Business Supplies',
+      
+      // Subscriptions & Digital Services
+      'NETFLIX': 'Subscription',
+      'SPOTIFY': 'Subscription',
+      'APPLE.COM': 'Subscription',
+      'GITHUB': 'Subscription',
+      'ADOBE': 'Subscription',
+      'ZOOM': 'Subscription',
+      'DROPBOX': 'Subscription',
+      'RING': 'Subscription',
+      'DISNEY': 'Subscription',
+      'HBO': 'Subscription',
+      'PRIME': 'Subscription',
+      'HULU': 'Subscription',
+      
+      // Entertainment
+      'BELMONT PARK': 'Entertainment',
+      'SKATING': 'Entertainment',
+      'MOVIES': 'Entertainment',
+      'THEATER': 'Entertainment',
+      'CINEMA': 'Entertainment',
+      'CONCERT': 'Entertainment',
+      'TICKET': 'Entertainment',
+      'HOUSTON BALLET': 'Entertainment',
+      'GOLF': 'Entertainment',
+      'WORKSHOP': 'Entertainment',
+      'FITNESS': 'Health & Fitness',
+      'GYM': 'Health & Fitness',
+      'WESTSIDE TENNIS': 'Health & Fitness',
+      
+      // Services
+      'UPWORK': 'Professional Services',
+      'INSURANCE': 'Insurance',
+      'NATL GEN INS': 'Insurance',
+      'ACI*GM': 'Auto Finance',
+      'MISTER CAR WASH': 'Auto Care',
+      'TEAMVIEWER': 'Software',
+      'LISLE VIOLIN': 'Music',
+      'BOOST MOBILE': 'Phone',
+      'ATT': 'Phone',
+      '4TE*DYNAMARK': 'Home Security',
+      'SERVICE': 'Services',
+      'CANTEEN': 'Vending',
+      'NAYAX': 'Vending',
+      'CSC SERVICEWORK': 'Laundry',
+      
+      // Travel
+      'HOTEL': 'Travel',
+      'AIRBNB': 'Travel',
+      'AIRLINE': 'Travel',
+      'FLIGHT': 'Travel',
+      'SWA': 'Travel',
+      'DELTA': 'Travel',
+      'UNITED': 'Travel',
+      'SOUTHWEST': 'Travel',
+      'AMERICAN AIRLINES': 'Travel',
+      'CORONADO': 'Travel',
+      'MIAMI': 'Travel',
+      'HUDSON': 'Travel',
+      
+      // Retail
+      'SIGNATURE SHOP': 'Retail',
+      'LIQUOR': 'Alcohol',
+      'CENTRAL LIQUOR': 'Alcohol',
+      'PARTY CITY': 'Retail',
+      'SMART STOP': 'Convenience Store',
+      'V STAR': 'Convenience Store',
+      
+      // Health
+      'MEDICAL': 'Healthcare',
+      'DOCTOR': 'Healthcare',
+      'PHARMACY': 'Healthcare',
+      'DENTAL': 'Healthcare',
+      'HOSPITAL': 'Healthcare',
+      'CLINIC': 'Healthcare',
+      
+      // Technology
+      'APPLE': 'Technology',
+      'MICROSOFT': 'Technology',
+      'GOOGLE': 'Technology',
+      'TECH': 'Technology',
+      'WIFI': 'Technology'
+    };
+
+    // Default card information since we don't have actual card data in the statements
+    cards.push({
+      id: "1",
+      type: "Debit",
+      userName: "Your Name",
+      password: "1238 XXXX XXXX XXXX", // Based on card number fragments in the data
+      validate: new Date(new Date().setFullYear(new Date().getFullYear() + 3)).toISOString()
+    });
+
+    // Function to determine category based on description
+    function determineCategory(description, type, amount) {
+      // Default category based on transaction type if description is not informative
+      let defaultCategory = 'Miscellaneous';
+      
+      if (type === 'Credit' && amount > 0) {
+        defaultCategory = 'Income';
+      } else if (type === 'Debit' && amount < 0) {
+        defaultCategory = 'Bill Payment';
+      } else if (type === 'Fee') {
+        defaultCategory = 'Bank Fee';
+      } else if (type === 'ATM') {
+        defaultCategory = 'Cash Withdrawal';
+      } else if (type === 'POS' && amount < 0) {
+        defaultCategory = 'Shopping';
+      }
+      
+      // Check description against category keywords
+      const upperDesc = description.toUpperCase();
+      for (const [keyword, category] of Object.entries(categories)) {
+        if (upperDesc.includes(keyword.toUpperCase())) {
+          return category;
+        }
+      }
+      
+      // If no match found, use the default category based on transaction type
+      return defaultCategory;
+    }
+
+    // Process each line of the CSV
+    for await (const line of rl) {
+      const values = parseCSVLine(line);
+      
+      if (values.length !== headers.length) {
+        console.warn(`Skipping line with incorrect number of values: ${line}`);
+        continue;
+      }
+
+      // Create a transaction object
+      const transaction = { id: transactionId.toString() };
+      
+      // Variables to store transaction info for later category determination
+      let transType = '';
+      let description = '';
+      let transAmount = 0;
+      
+      // Map CSV columns to transaction properties
+      headers.forEach((header, index) => {
+        const value = values[index];
+        
+        switch(header) {
+          case 'Posted Date':
+            transaction.postedDate = value;
+            // Create a standardized date format
+            const dateParts = value.split('/');
+            const month = parseInt(dateParts[0], 10);
+            const day = parseInt(dateParts[1], 10);
+            const year = parseInt(dateParts[2], 10);
+            
+            // No longer validate the date - include all transactions regardless of date
+            transaction.date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+            break;
+          case 'Transaction Date':
+            transaction.transactionDate = value;
+            break;
+          case 'Transaction Type':
+            transaction.type = value;
+            transType = value;
+            break;
+          case 'Description':
+            transaction.description = value;
+            description = value;
+            // Extract merchant name for categorization
+            const words = value.split(' ');
+            if (words.length > 0) {
+              const possibleMerchant = words[0].replace('*', '').trim();
+              if (possibleMerchant.length > 2) {
+                merchants.add(possibleMerchant);
+              }
+            }
+            break;
+          case 'Amount':
+            // Remove $ and convert to number
+            let amount = value.replace('$', '').replace(',', '');
+            // Handle parentheses notation for negative numbers
+            if (amount.startsWith('(') && amount.endsWith(')')) {
+              amount = '-' + amount.slice(1, -1);
+            }
+            transaction.amount = parseFloat(amount);
+            transAmount = parseFloat(amount);
+            transaction.isDebit = transaction.amount < 0;
+            break;
+        }
+      });
+
+      // Add computed fields
+      transaction.category = determineCategory(description, transType, transAmount);
+      transaction.cardId = "1"; // Link to the default card
+
+      transactions.push(transaction);
+      transactionId++;
+    }
+
+    // Calculate monthly spending by category
+    const monthlySpending = {};
+    transactions.forEach(t => {
+      if (t.date) {
+        const yearMonth = t.date.substring(0, 7); // Get YYYY-MM
+        if (!monthlySpending[yearMonth]) {
+          monthlySpending[yearMonth] = {};
+        }
+        
+        const category = t.category;
+        if (!monthlySpending[yearMonth][category]) {
+          monthlySpending[yearMonth][category] = 0;
+        }
+        
+        // Only add negative amounts (spending)
+        if (t.amount < 0) {
+          monthlySpending[yearMonth][category] += Math.abs(t.amount);
+        }
+      }
+    });
+
+    // Calculate total balance over time (for the chart)
+    let balance = 0;
+    const balanceHistory = [];
+    const sortedTransactions = [...transactions].sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    );
+    
+    sortedTransactions.forEach(t => {
+      balance += t.amount;
+      balanceHistory.push({
+        date: t.date,
+        balance: balance.toFixed(2)
+      });
+    });
+
+    // Create recent activity summary
+    const recentActivity = sortedTransactions.slice(-20).reverse();
+    
+    // Read existing db.json if it exists
+    let dbData = {};
+    if (fs.existsSync(jsonOutputPath)) {
+      try {
+        const existingData = fs.readFileSync(jsonOutputPath, 'utf8');
+        dbData = JSON.parse(existingData);
+      } catch (err) {
+        console.warn('Could not parse existing db.json, creating a new one');
+      }
+    }
+
+    // Add our data to the JSON
+    dbData.cards = cards;
+    dbData.transactions = transactions;
+    dbData.monthlySpending = monthlySpending;
+    dbData.balanceHistory = balanceHistory;
+    dbData.recentActivity = recentActivity;
+
+    // Analyze categorization results
+    const categoryStats = {};
+    const uncategorizedTransactions = [];
+    
+    transactions.forEach(t => {
+      if (!categoryStats[t.category]) {
+        categoryStats[t.category] = { count: 0, total: 0 };
+      }
+      categoryStats[t.category].count += 1;
+      categoryStats[t.category].total += Math.abs(t.amount);
+      
+      if (t.category === 'Uncategorized') {
+        uncategorizedTransactions.push(t);
+      }
+    });
+
+    // Write to db.json
+    fs.writeFileSync(jsonOutputPath, JSON.stringify(dbData, null, 2));
+    
+    console.log(`Successfully converted Truist statements to JSON.`);
+    console.log(`Output saved to ${jsonOutputPath}`);
+    console.log(`Found ${transactions.length} transactions.`);
+    
+    console.log('\nCreated the following data:');
+    console.log(`- ${cards.length} cards`);
+    console.log(`- ${transactions.length} transactions`);
+    console.log(`- ${Object.keys(monthlySpending).length} months of spending data`);
+    console.log(`- ${balanceHistory.length} balance history points`);
+    
+    console.log('\nCategory statistics:');
+    Object.entries(categoryStats)
+      .sort((a, b) => b[1].total - a[1].total)
+      .forEach(([category, stats]) => {
+        console.log(`- ${category}: ${stats.count} transactions, $${stats.total.toFixed(2)}`);
+      });
+    
+    console.log(`\nUncategorized transactions: ${uncategorizedTransactions.length}`);
+    if (uncategorizedTransactions.length > 0) {
+      console.log('Sample of uncategorized transactions:');
+      uncategorizedTransactions.slice(0, 5).forEach(t => {
+        console.log(`- ${t.description}: $${Math.abs(t.amount).toFixed(2)}`);
+      });
+    }
+    
+    // Preview one transaction
+    if (transactions.length > 0) {
+      console.log('\nPreview of first transaction:');
+      console.log(JSON.stringify(transactions[0], null, 2));
+    }
+    
+  } catch (error) {
+    console.error('Error during conversion:', error);
+  }
+}
+
+// Helper function to handle CSV lines properly (accounts for quoted values with commas)
+function parseCSVLine(line) {
+  const values = [];
+  let inQuote = false;
+  let currentValue = '';
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuote = !inQuote;
+    } else if (char === ',' && !inQuote) {
+      values.push(currentValue.trim());
+      currentValue = '';
+    } else {
+      currentValue += char;
+    }
+  }
+  
+  // Add the last value
+  values.push(currentValue.trim());
+  
+  return values;
+}
+
+// Run the conversion
+convertTruistCsvToJson();
+
+================
+File: vite.config.ts
+================
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
